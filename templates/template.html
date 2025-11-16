@@ -1,0 +1,2972 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=794, initial-scale=1.0">
+    <title>AI Audit Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../themes/dark-theme.css?v=2">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- SF Pro Display Fonts -->
+    <style>
+        @page {
+            size: 794px 1123px;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYREGULAR.OTF') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYBOLD.OTF') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+            font-weight: 900;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
+            font-weight: 800;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYTHINITALIC.OTF') format('opentype');
+            font-weight: 100;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('./fonts/SFPRODISPLAYULTRALIGHTITALIC.OTF') format('opentype');
+            font-weight: 200;
+            font-style: italic;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            background: #000 !important;
+            margin: 0;
+            padding: 0;
+            width: 794px;
+            position: relative;
+        }
+
+        @media print {
+
+            html,
+            body {
+                background: #000 !important;
+                width: 794px;
+            }
+        }
+
+        /* New Design Styles */
+        .bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 795px;
+            overflow: hidden;
+        }
+
+        .bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 795px;
+        }
+
+        .container {
+            background: white;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-after: always;
+            overflow: visible;
+        }
+
+        .content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 64px;
+            justify-content: flex-start;
+            left: 32px;
+            position: absolute;
+            top: 310px;
+            width: 730px;
+        }
+
+        .frame-480916 {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 32px;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .frame-480917 {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 8px;
+            justify-content: flex-start;
+            line-height: 0;
+            position: relative;
+        }
+
+        .frame-480918 {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            gap: 43px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .frame-480919 {
+            align-items: flex-start;
+            background: white;
+            border-radius: 21px;
+            display: flex;
+            flex-shrink: 0;
+            gap: 5px;
+            justify-content: center;
+            padding: 27px;
+            position: relative;
+        }
+
+        .frame-480920 {
+            position: relative;
+            align-items: center;
+            background: url('./assets/first-section-cta.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 21px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 232px;
+            justify-content: space-between;
+            padding: 27px 32px;
+            width: 100%;
+            z-index: 0;
+        }
+
+        .ico img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .ico {
+            flex-shrink: 0;
+            height: 75px;
+            position: relative;
+            width: 75px;
+        }
+
+        .text-ai-audit p {
+            line-height: 43px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .text-ai-audit {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 32px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .text-company-brief p {
+            line-height: 36px;
+            margin: 0;
+        }
+
+        .text-company-brief {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .text-date p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .text-date {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .text-lewux p {
+            line-height: 75px;
+            margin: 0;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .text-lewux {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            justify-content: center;
+            position: relative;
+            max-width: 600px;
+        }
+
+        /* Page 2 Styles */
+        .page-2-container {
+            background: #ebebf0;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .page-2-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            overflow: hidden;
+        }
+
+        .page-2-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .page-2-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .page-2-content {
+            align-items: flex-start;
+            border-radius: 0 0 21px 21px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            justify-content: flex-start;
+            left: 0;
+            padding: 32px 32px 0 32px;
+            position: absolute;
+            top: 0;
+            width: 794px;
+        }
+
+        .page-2-cta {
+            align-items: center;
+            background: url('./assets/cta-bg.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 21px;
+            display: flex;
+            justify-content: space-between;
+            left: 50%;
+            padding: 27px;
+            position: absolute;
+            top: 963px;
+            transform: translateX(-50%);
+            width: 730px;
+        }
+
+        .page-2-cta-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .page-2-cta-button {
+            align-items: center;
+            background: white;
+            border-radius: 11px;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+            overflow: hidden;
+            padding: 16px 21px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .page-2-text-ready {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page-2-text-ready p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-text-consultation {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page-2-text-consultation p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-text-signup {
+            color: #2f0a42;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            line-height: 0;
+            position: relative;
+            text-shadow: rgba(0, 0, 0, 0.24) 0px 3px 21px;
+        }
+
+        .page-2-text-signup p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-text-metrics {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page-2-text-metrics p {
+            line-height: 43px;
+            margin: 0;
+        }
+
+        .page-2-metrics {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 4px;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-metrics-row {
+            align-items: flex-start;
+            display: flex;
+            flex-shrink: 0;
+            gap: 4px;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-metric-card {
+            align-items: flex-start;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            flex: 1;
+            gap: 21px;
+            justify-content: flex-start;
+            min-height: 0;
+            min-width: 0;
+            padding: 27px;
+            position: relative;
+        }
+
+        .page-2-metric-card.desktop {
+            border-radius: 21px 0 0 0;
+        }
+
+        .page-2-metric-card.mobile {
+            border-radius: 0 21px 0 0;
+        }
+
+        .page-2-metric-card.best-practices {
+            border-radius: 0 0 0 21px;
+        }
+
+        .page-2-metric-card.seo {
+            border-radius: 0 0 21px 0;
+        }
+
+        .page-2-metric-header {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: space-between;
+            line-height: 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-text-metric-label {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page-2-text-metric-label p {
+            line-height: 43px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-text-percentage {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .page-2-text-percentage p {
+            line-height: 43px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-progress-bar {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            gap: 27px;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-progress-bg {
+            background: #e5e5ea;
+            border-radius: 5px;
+            flex-shrink: 0;
+            flex: 1;
+            height: 11px;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .page-2-progress-fill {
+            height: 11px;
+            left: 0;
+            position: absolute;
+            top: 0;
+        }
+
+        .page-2-progress-fill img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .page-2-audit-summary {
+            align-items: flex-start;
+            background: white;
+            border-radius: 21px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 16px;
+            justify-content: flex-start;
+            padding: 27px;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-text-summary-title {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .page-2-text-summary-title p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-summary-item {
+            align-items: flex-start;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 8px;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-summary-header {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            gap: 13px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .page-2-icon-computer,
+        .page-2-icon-smartphone {
+            flex-shrink: 0;
+            height: 32px;
+            position: relative;
+            width: 32px;
+        }
+
+        .page-2-icon-computer img,
+        .page-2-icon-smartphone img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .page-2-text-desktop-label,
+        .page-2-text-mobile-label {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 600;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .page-2-text-desktop-label p,
+        .page-2-text-mobile-label p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .page-2-text-desktop-summary,
+        .page-2-text-mobile-summary {
+            color: #636366;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .page-2-text-desktop-summary p,
+        .page-2-text-mobile-summary p {
+            line-height: 32px;
+            margin: 0;
+        }
+
+        /* Page 3 Styles */
+        .page-3-container {
+            background: #ebebf0;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .page-3-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            overflow: hidden;
+        }
+
+        .page-3-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .page-3-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .page-3-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: flex-start;
+            left: 0;
+            padding: 32px;
+            position: absolute;
+            top: 0;
+            width: 794px;
+        }
+
+        .page-3-cta {
+            align-items: center;
+            backdrop-filter: blur(37px);
+            background: rgba(255, 255, 255, .14);
+            border-radius: 21px;
+            display: flex;
+            justify-content: space-between;
+            left: 50%;
+            padding: 27px;
+            position: absolute;
+            top: 963px;
+            transform: translateX(-50%);
+            width: 730px;
+        }
+
+        .page-3-cta::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 21px;
+            padding: 3.3px;
+            background: linear-gradient(135deg, rgba(237, 115, 255, .8) 0%, rgba(237, 115, 255, 0) 11%, rgba(255, 255, 255, .08) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-3-cta-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-3-cta-button {
+            align-items: center;
+            background: #fff;
+            border-radius: 11px;
+            display: flex;
+            justify-content: center;
+            padding: 16px 21px;
+        }
+
+        .page-3-text-ready {
+            color: #fff;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .page-3-text-consultation {
+            color: rgba(255, 255, 255, .64);
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .page-3-text-signup {
+            color: #2f0a42;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            text-shadow: rgba(0, 0, 0, .24) 0 3px 21px;
+        }
+
+        .page-3-card {
+            background: #fff;
+            border-radius: 21px;
+            padding: 32px;
+            width: 100%;
+        }
+
+        .page-3-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .page-3-title {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .page-3-metrics {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .page-3-chip {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 16px;
+            border: 1px solid #d1d1d6;
+            border-radius: 11px;
+        }
+
+        .page-3-chip.desktop {
+            background: rgba(62, 210, 146, .08);
+        }
+
+        .page-3-chip.mobile {
+            background: rgba(255, 204, 0, .08);
+        }
+
+        .page-3-chip .label {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .page-3-chip .value {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .page-3-desc {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .page-3-legend {
+            display: flex;
+            gap: 27px;
+            align-items: center;
+        }
+
+        .page-3-legend-item {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+        }
+
+        .page-3-legend-dot {
+            width: 11px;
+            height: 11px;
+        }
+
+        .seo-items {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .seo-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .seo-item.passed {
+            background: rgba(62, 210, 146, .08);
+        }
+
+        .seo-item.failed {
+            background: rgba(255, 59, 48, .08);
+        }
+
+        .seo-item+.seo-item {
+            border-top: none;
+        }
+
+        .seo-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .seo-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .seo-item-header {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+            width: 181px;
+        }
+
+        .status-dot {
+            width: 11px;
+            height: 11px;
+        }
+
+        .text-item-name {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            width: 160px;
+        }
+
+        .text-item-description {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-blue': '#3B82F6',
+                        'neon-purple': '#A21CAF',
+                        'neon-cyan': '#06b6d4',
+                        'neon-pink': '#ec4899',
+                        'dark-bg': '#0a0f1c',
+                        'card-bg': '#181f2e',
+                        'card-glow': '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        // Set progress bar widths and colors from data attributes
+        document.addEventListener('DOMContentLoaded', function () {
+            const progressFills = document.querySelectorAll('.page-2-progress-fill[data-width]');
+            progressFills.forEach(fill => {
+                const width = fill.getAttribute('data-width');
+                if (width) {
+                    const widthNum = parseFloat(width);
+                    fill.style.width = width + '%';
+
+                    // Set color based on value: <60 red, 60-80 yellow, >80 green
+                    let color;
+                    if (widthNum < 60) {
+                        color = '#ff4444'; // Red
+                    } else if (widthNum >= 60 && widthNum <= 80) {
+                        color = '#ffa500'; // Orange/Yellow
+                    } else {
+                        color = '#0cce6b'; // Green
+                    }
+
+                    // Apply color as background
+                    fill.style.backgroundColor = color;
+                    fill.style.borderRadius = '6px';
+
+                    // Hide the SVG image and use background color instead
+                    const img = fill.querySelector('img');
+                    if (img) {
+                        img.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <!-- New Design Page 1 -->
+    <div class="container">
+        <div class="bg-container">
+            <div class="bg-wrapper">
+                <div class="bg"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="frame-480916">
+                <div class="text-ai-audit">
+                    <p>AI audit report for</p>
+                </div>
+                <div class="frame-480918">
+                    <div class="frame-480919">
+                        <div class="ico">
+                            <img alt="" src="./assets/8b35c07e7d833f82ebcec8800c5dc0b7102f0e51.svg">
+                        </div>
+                    </div>
+                    <div class="frame-480917">
+                        <div class="text-lewux">
+                            <p>{{siteName}}</p>
+                        </div>
+                        <div class="text-date">
+                            <p>{{date}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="frame-480920">
+                <div class="text-company-brief">
+                    <p>{{description}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Design Page 2 -->
+    <div class="page-2-container">
+        <div class="page-2-bg-container">
+            <div class="page-2-bg-wrapper">
+                <div class="page-2-bg"></div>
+            </div>
+        </div>
+        <div class="page-2-cta">
+            <div class="page-2-cta-content">
+                <div class="page-2-text-ready">
+                    <p>Ready to improve your site?</p>
+                </div>
+                <div class="page-2-text-consultation">
+                    <p>Sign up for a consultation with our experts</p>
+                </div>
+            </div>
+            <a href="https://lewux.com/" target="_blank" class="page-2-cta-button">
+                <div class="page-2-text-signup">
+                    <p>Sign up for consultation</p>
+                </div>
+            </a>
+        </div>
+        <div class="page-2-content">
+            <div class="page-2-text-metrics">
+                <p>Current Speed Metrics</p>
+            </div>
+            <div class="page-2-metrics">
+                <div class="page-2-metrics-row">
+                    <div class="page-2-metric-card desktop">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>Desktop</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.desktop.total_score}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.desktop.total_score}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-2-metric-card mobile">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>Mobile</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.mobile.total_score}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.mobile.total_score}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-2-metrics-row">
+                    <div class="page-2-metric-card performance">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>Performance</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.mobile.performance}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.mobile.performance}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-2-metric-card accessibility">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>Accessibility</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.mobile.accessibility}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.mobile.accessibility}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-2-metrics-row">
+                    <div class="page-2-metric-card best-practices">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>Best Practices</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.mobile.best_practices}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.mobile.best_practices}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-2-metric-card seo">
+                        <div class="page-2-metric-header">
+                            <div class="page-2-text-metric-label">
+                                <p>SEO</p>
+                            </div>
+                            <div class="page-2-text-percentage">
+                                <p>{{lighthouseMetrics.mobile.seo}}%</p>
+                            </div>
+                        </div>
+                        <div class="page-2-progress-bar">
+                            <div class="page-2-progress-bg"></div>
+                            <div class="page-2-progress-fill" data-width="{{lighthouseMetrics.mobile.seo}}">
+                                <img alt="" src="./assets/5efb07c5a22b07dda953c66a59238841dd2aefdd.svg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page-2-audit-summary">
+                <div class="page-2-text-summary-title">
+                    <p>Brief Audit Summary</p>
+                </div>
+                <div class="page-2-summary-item">
+                    <div class="page-2-summary-header">
+                        <div class="page-2-icon-computer">
+                            <img alt="" src="./assets/936d3023ecc4c9a6e8b7a439481a0fc2aaf80125.svg">
+                        </div>
+                        <div class="page-2-text-desktop-label">
+                            <p>Desktop</p>
+                        </div>
+                    </div>
+                    <div class="page-2-text-desktop-summary">
+                        <p>{{summary.desktop}}</p>
+                    </div>
+                </div>
+                <div class="page-2-summary-item">
+                    <div class="page-2-summary-header">
+                        <div class="page-2-icon-smartphone">
+                            <img alt="" src="./assets/05a55b7362d284319dcf097c1bd7a49cdfbc2e43.svg">
+                        </div>
+                        <div class="page-2-text-mobile-label">
+                            <p>Mobile</p>
+                        </div>
+                    </div>
+                    <div class="page-2-text-mobile-summary">
+                        <p>{{summary.mobile}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Design Page 3 -->
+    <style>
+        /* Page 3 styles from new-design/3/styles.css */
+        .p3-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            overflow: hidden;
+        }
+
+        .p3-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .p3-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .p3-container {
+            background: white;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .p3-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: flex-start;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            padding: 32px 0;
+        }
+
+        .p3-cta {
+            align-items: center;
+            background: url('./assets/cta-bg.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 21px;
+            display: flex;
+            justify-content: space-between;
+            left: 50%;
+            padding: 27px;
+            position: absolute;
+            top: 963px;
+            transform: translateX(-50%);
+            width: 730px;
+        }
+
+        .p3-cta-button {
+            align-items: center;
+            background: white;
+            border-radius: 11px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            padding: 16px 21px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .p3-cta-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p3-text-ready {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p3-text-ready p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p3-text-consultation {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p3-text-consultation p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p3-text-signup {
+            color: #2f0a42;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            text-shadow: rgba(0, 0, 0, 0.24) 0 3px 21px;
+        }
+
+        .p3-site-loading-speed,
+        .p3-seo-analysis {
+            align-items: flex-start;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: flex-start;
+            padding: 32px;
+            position: relative;
+            width: 100%;
+        }
+
+        .p3-loading-header,
+        .p3-seo-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .p3-text-title {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .p3-metrics-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .p3-metric-content {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .p3-metric-desktop,
+        .p3-metric-mobile {
+            align-items: center;
+            border: 1px solid #d1d1d6;
+            display: flex;
+            gap: 16px;
+            justify-content: flex-start;
+            padding: 11px 16px;
+        }
+
+        .p3-metric-desktop {
+            background: rgba(62, 210, 146, 0.08);
+            border-radius: 11px 0 0 11px;
+        }
+
+        .p3-metric-mobile {
+            background: rgba(255, 204, 0, 0.08);
+            border-left: none;
+            border-radius: 0 11px 11px 0;
+        }
+
+        .p3-text-desktop,
+        .p3-text-mobile,
+        .p3-text-time {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+        }
+
+        .p3-text-time {
+            font-weight: 700;
+        }
+
+        .p3-text-description {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .p3-legend {
+            display: flex;
+            align-items: center;
+            gap: 27px;
+        }
+
+        .p3-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .p3-legend-dot {
+            width: 11px;
+            height: 11px;
+        }
+
+        .p3-seo-items {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .p3-seo-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .p3-seo-item+.p3-seo-item {
+            border-top: none;
+        }
+
+        .p3-seo-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .p3-seo-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .p3-seo-item.passed {
+            background: rgba(62, 210, 146, 0.08);
+        }
+
+        .p3-seo-item.failed {
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .p3-seo-item-header {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+            width: 181px;
+        }
+
+        .p3-status-dot {
+            width: 11px;
+            height: 11px;
+        }
+
+        .p3-text-item-name {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            width: 160px;
+        }
+
+        .p3-text-item-description {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .p3-text-legend {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+        }
+
+        .p3-icon-check,
+        .p3-icon-danger {
+            flex-shrink: 0;
+            height: 21px;
+            position: relative;
+            width: 21px;
+        }
+
+        .p3-icon-group {
+            bottom: 0;
+            left: 33.87%;
+            position: absolute;
+            right: 33.87%;
+            top: 0;
+        }
+
+        .p3-status-dot img,
+        .p3-legend-dot img,
+        .p3-icon-check img,
+        .p3-icon-danger img,
+        .p3-icon-group img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        /* Compatibility styles for dynamic content without p3- prefix */
+        .seo-items {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .seo-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .seo-item+.seo-item {
+            border-top: none;
+        }
+
+        .seo-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .seo-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .seo-item.passed {
+            background: rgba(62, 210, 146, 0.08);
+        }
+
+        .seo-item.failed {
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .seo-item-header {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+            width: 181px;
+        }
+
+        .status-dot {
+            width: 11px;
+            height: 11px;
+        }
+
+        .status-dot img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .text-item-name {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            width: 160px;
+        }
+
+        .text-item-name p {
+            line-height: 32px;
+            margin: 0;
+        }
+
+        .text-item-description {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .text-item-description p {
+            line-height: 32px;
+            margin: 0;
+        }
+    </style>
+    <div class="p3-container" data-name="3" data-node-id="177:102">
+        <div class="p3-bg-container">
+            <div class="p3-bg-wrapper">
+                <div class="p3-bg" data-name="BG" data-node-id="232:2010"></div>
+            </div>
+        </div>
+        <div class="p3-cta" data-name="CTA" data-node-id="232:2003">
+            <div class="p3-cta-content" data-node-id="232:2004">
+                <div class="p3-text-ready" data-node-id="232:2005">
+                    <p>Ready to improve your site?</p>
+                </div>
+                <div class="p3-text-consultation" data-node-id="232:2006">
+                    <p>Sign up for a consultation with our experts</p>
+                </div>
+            </div>
+            <a href="https://lewux.com/" target="_blank" class="p3-cta-button" data-node-id="232:2007">
+                <div class="p3-text-signup" data-node-id="232:2008">
+                    <p>Sign up for consultation</p>
+                </div>
+            </a>
+        </div>
+        <div class="p3-content" data-name="Content" data-node-id="177:120">
+            <div class="p3-site-loading-speed" data-name="Site Loading Speed" data-node-id="177:136">
+                <div class="p3-loading-header" data-node-id="177:137">
+                    <div class="p3-text-title" data-node-id="177:138">
+                        <p>Site Loading Speed</p>
+                    </div>
+                    <div class="p3-metrics-container" data-node-id="177:139">
+                        <div class="p3-metric-desktop" data-node-id="177:140">
+                            <div class="p3-metric-content" data-node-id="177:141">
+                                <div class="p3-icon-check" data-name="check 1" data-node-id="177:144"> <img alt=""
+                                        src="./assets/eb0492deee2c3a67412a54200a424c116561b3da.svg"> </div>
+                                <div class="p3-text-desktop" data-node-id="177:146">
+                                    <p>Desktop</p>
+                                </div>
+                            </div>
+                            <div class="p3-text-time" data-node-id="177:147">
+                                <p>{{fcpDesktop}}s</p>
+                            </div>
+                        </div>
+                        <div class="p3-metric-mobile" data-node-id="177:148">
+                            <div class="p3-metric-content" data-node-id="177:149">
+                                <div class="p3-icon-danger" data-name="danger 1" data-node-id="177:152">
+                                    <div class="p3-icon-group" data-name="Group" data-node-id="177:153"> <img alt=""
+                                            src="./assets/587967bfa033067bc2054e8fce6d13193e9d63e1.svg"> </div>
+                                </div>
+                                <div class="p3-text-mobile" data-node-id="177:158">
+                                    <p>Mobile</p>
+                                </div>
+                            </div>
+                            <div class="p3-text-time" data-node-id="177:159">
+                                <p>{{fcpMobile}}s</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p3-text-description" data-node-id="177:175">
+                    {{siteLoadingSpeedTextHtml}}
+                </div>
+            </div>
+            <div class="p3-seo-analysis" data-name="SEO Analysis" data-node-id="177:176">
+                <div class="p3-seo-header" data-node-id="177:177">
+                    <div class="p3-text-title" data-node-id="177:178">
+                        <p>SEO Analysis</p>
+                    </div>
+                    <div class="p3-legend" data-node-id="177:179">
+                        <div class="p3-legend-item" data-node-id="177:180">
+                            <div class="p3-legend-dot" data-node-id="177:181"> <img alt=""
+                                    src="./assets/5ffd2b68fc15f9adabaf982bb4295c1e0d092516.svg"> </div>
+                            <div class="p3-text-legend" data-node-id="177:184">
+                                <p>Passed</p>
+                            </div>
+                        </div>
+                        <div class="p3-legend-item" data-node-id="177:185">
+                            <div class="p3-legend-dot" data-node-id="177:186"> <img alt=""
+                                    src="./assets/cf422911af64f881fd581ca2f79e280309c04173.svg"> </div>
+                            <div class="p3-text-legend" data-node-id="177:189">
+                                <p>Failed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p3-seo-items" data-node-id="177:190">
+                    {{seoStatusListHtml}}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- New Design Page 4 -->
+    <style>
+        /* Page 4 styles from new-design/4/styles.css */
+        .p4-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            overflow: hidden;
+        }
+
+        .p4-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .p4-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .p4-container {
+            background: white;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .p4-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            justify-content: flex-start;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            padding: 0;
+        }
+
+        .p4-cta {
+            align-items: center;
+            background: url('./assets/cta-bg.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 21px;
+            display: flex;
+            justify-content: space-between;
+            left: 50%;
+            padding: 27px;
+            position: absolute;
+            top: 990px;
+            transform: translateX(-50%);
+            width: 730px;
+        }
+
+        .p4-cta-button {
+            align-items: center;
+            background: white;
+            border-radius: 11px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            padding: 16px 21px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .p4-cta-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p4-text-ready {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p4-text-ready p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p4-text-consultation {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p4-text-consultation p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p4-text-signup {
+            color: #2f0a42;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            text-shadow: rgba(0, 0, 0, 0.24) 0 3px 21px;
+        }
+
+        .p4-text-signup p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p4-performance-recommendations,
+        .p4-seo-recommendations,
+        .p4-accessibility-recommendations {
+            align-items: flex-start;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: flex-start;
+            padding: 32px;
+            position: relative;
+            width: 100%;
+        }
+
+        .p4-performance-header,
+        .p4-seo-header,
+        .p4-accessibility-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .p4-text-title {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .p4-text-title p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p4-effort-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .p4-text-effort-label,
+        .p4-text-effort-value {
+            color: #1c1c1e;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+        }
+
+        .p4-text-effort-value {
+            font-weight: 700;
+        }
+
+        .p4-text-effort-label p,
+        .p4-text-effort-value p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p4-recommendations-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .p4-recommendation-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .p4-recommendation-item+.p4-recommendation-item {
+            border-top: none;
+        }
+
+        .p4-recommendation-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .p4-recommendation-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .p4-recommendation-content {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .p4-icon-warning,
+        .p4-icon-danger {
+            flex-shrink: 0;
+            height: 21px;
+            position: relative;
+            width: 21px;
+        }
+
+        .p4-icon-group {
+            bottom: 0;
+            left: 33.87%;
+            position: absolute;
+            right: 33.87%;
+            top: 0;
+        }
+
+        .p4-icon-warning img,
+        .p4-icon-danger img,
+        .p4-icon-group img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .p4-text-recommendation {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .p4-text-recommendation p {
+            line-height: 32px;
+            margin: 0;
+        }
+
+        /* Compatibility styles for dynamic content without p4- prefix */
+        .recommendations-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .recommendation-item+.recommendation-item {
+            border-top: none;
+        }
+
+        .recommendation-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .recommendation-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .recommendation-item.performance {
+            background: #fff0ef;
+        }
+
+        .recommendation-item.seo,
+        .recommendation-item.accessibility {
+            background: #fffbeb;
+        }
+
+        .recommendation-content {
+            display: flex;
+            gap: 21px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .icon-warning,
+        .icon-danger {
+            flex-shrink: 0;
+            height: 21px;
+            position: relative;
+            width: 21px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-group {
+            bottom: 0;
+            left: 33.87%;
+            position: absolute;
+            right: 33.87%;
+            top: 0;
+        }
+
+        .icon-warning img,
+        .icon-group img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 7px;
+        }
+        .icon-danger img{
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 18px;
+        }
+
+        .text-recommendation {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .text-recommendation p {
+            line-height: 32px;
+            margin: 0;
+            color: #1C1C1E;
+        }
+    </style>
+    <div class="p4-container" data-name="4" data-node-id="177:240">
+        <div class="p4-bg-container">
+            <div class="p4-bg-wrapper">
+                <div class="p4-bg" data-name="BG" data-node-id="232:2035"></div>
+            </div>
+        </div>
+        <div class="p4-cta" data-name="CTA" data-node-id="232:2028">
+            <div class="p4-cta-content" data-node-id="232:2029">
+                <div class="p4-text-ready" data-node-id="232:2030">
+                    <p>Ready to improve your site?</p>
+                </div>
+                <div class="p4-text-consultation" data-node-id="232:2031">
+                    <p>Sign up for a consultation with our experts</p>
+                </div>
+            </div>
+            <a href="https://lewux.com/" target="_blank" class="p4-cta-button" data-node-id="232:2032">
+                <div class="p4-text-signup" data-node-id="232:2033">
+                    <p>Sign up for consultation</p>
+                </div>
+            </a>
+        </div>
+        <div class="p4-content" data-name="Content" data-node-id="177:304">
+            <div class="p4-performance-recommendations" data-name="Performance Recommendations" data-node-id="177:305">
+                <div class="p4-performance-header" data-node-id="177:306">
+                    <div class="p4-text-title" data-node-id="177:307">
+                        <p>Performance Recommendations</p>
+                    </div>
+                    <div class="p4-effort-container" data-node-id="177:308">
+                        <div class="p4-text-effort-label" data-node-id="177:309">
+                            <p>Effort:</p>
+                        </div>
+                        <div class="p4-text-effort-value" data-node-id="177:310">
+                            <p>Medium</p>
+                        </div>
+                    </div>
+                </div>
+                {{performanceRecsHtml}}
+            </div>
+            <div class="p4-seo-recommendations" data-name="SEO Recommendations" data-node-id="177:359">
+                <div class="p4-seo-header" data-node-id="177:360">
+                    <div class="p4-text-title" data-node-id="177:361">
+                        <p>SEO Recommendations</p>
+                    </div>
+                    <div class="p4-effort-container" data-node-id="177:362">
+                        <div class="p4-text-effort-label" data-node-id="177:363">
+                            <p>Effort:</p>
+                        </div>
+                        <div class="p4-text-effort-value" data-node-id="177:364">
+                            <p>Medium</p>
+                        </div>
+                    </div>
+                </div>
+                {{seoRecsHtml}}
+            </div>
+            <div class="p4-accessibility-recommendations" data-name="Accessibility Recommendations"
+                data-node-id="177:413">
+                <div class="p4-accessibility-header" data-node-id="177:414">
+                    <div class="p4-text-title" data-node-id="177:415">
+                        <p>Accessibility Recommendations</p>
+                    </div>
+                    <div class="p4-effort-container" data-node-id="177:416">
+                        <div class="p4-text-effort-label" data-node-id="177:417">
+                            <p>Effort:</p>
+                        </div>
+                        <div class="p4-text-effort-value" data-node-id="177:418">
+                            <p>Low</p>
+                        </div>
+                    </div>
+                </div>
+                {{accessibilityRecsHtml}}
+            </div>
+        </div>
+    </div>
+
+    <!-- New Design Page 5 -->
+    <style>
+        /* Page 5 styles from new-design/5/styles.css */
+        .p5-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 794px;
+            overflow: hidden;
+        }
+
+        .p5-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .p5-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .p5-container {
+            background: #ebebf0;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .p5-results {
+            align-items: center;
+            background: url('./assets/Let\'s Summarize The Results-bg.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 21px;
+            display: flex;
+            flex-direction: column;
+            gap: 27px;
+            justify-content: flex-start;
+            left: 50%;
+            padding: 64px 32px;
+            position: absolute;
+            top: 671px;
+            transform: translateX(-50%);
+            width: 730px;
+        }
+
+        .p5-text-title-large {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 43px;
+            font-weight: 700;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p5-text-title-large p {
+            line-height: 57px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p5-text-description {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .p5-text-description p {
+            line-height: 32px;
+            margin: 0;
+            text-align: center;
+        }
+
+        .p5-final-recommendations {
+            align-items: flex-start;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            justify-content: flex-start;
+            left: 0;
+            padding: 32px;
+            position: absolute;
+            top: 0;
+            width: 794px;
+        }
+
+        .p5-recommendations-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .p5-header-content {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .p5-text-title {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p5-text-title p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p5-text-subtitle {
+            color: #636366;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p5-text-subtitle p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p5-effort-container {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            gap: 5px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .p5-text-effort-label,
+        .p5-text-effort-value {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p5-text-effort-value {
+            font-weight: 700;
+        }
+
+        .p5-text-effort-label p,
+        .p5-text-effort-value p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p5-recommendations-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 16px;
+            border-radius: 16px;
+        }
+
+        .p5-recommendation-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+            border-radius: 11px;
+            background: #FFFBEB;
+        }
+
+        .p5-recommendation-content {
+            display: flex;
+            gap: 21px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .p5-icon-danger {
+            flex-shrink: 0;
+            height: 21px;
+            position: relative;
+            width: 21px;
+        }
+
+        .p5-icon-group {
+            bottom: 0;
+            left: 33.87%;
+            position: absolute;
+            right: 33.87%;
+            top: 0;
+        }
+
+        .p5-icon-danger img,
+        .p5-icon-group img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .p5-text-recommendation {
+            color: #636366;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p5-text-recommendation p {
+            line-height: 32px;
+            margin: 0;
+            color: #1C1C1E;
+        }
+
+        /* Compatibility styles for dynamic content without p5- prefix */
+        .p5-recommendations-list .recommendations-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .p5-recommendations-list .recommendation-item {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            border: 1px solid #d1d1d6;
+            padding: 16px 21px;
+            width: 100%;
+        }
+
+        .p5-recommendations-list .recommendation-item+.recommendation-item {
+            border-top: none;
+        }
+
+        .p5-recommendations-list .recommendation-item:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .p5-recommendations-list .recommendation-item:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .p5-recommendations-list .recommendation-content {
+            display: flex;
+            gap: 21px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .p5-recommendations-list .icon-danger {
+            flex-shrink: 0;
+            height: 21px;
+            position: relative;
+            width: 21px;
+        }
+
+        .p5-recommendations-list .icon-group {
+            bottom: 0;
+            left: 33.87%;
+            position: absolute;
+            right: 33.87%;
+            top: 0;
+        }
+
+        .p5-recommendations-list .icon-danger img,
+        .p5-recommendations-list .icon-group img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .p5-recommendations-list .text-recommendation {
+            color: #636366;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+        }
+
+        .p5-recommendations-list .text-recommendation p {
+            line-height: 32px;
+            margin: 0;
+        }
+    </style>
+    <div class="p5-container" data-name="5" data-node-id="177:455">
+        <div class="p5-bg-container">
+            <div class="p5-bg-wrapper">
+                <div class="p5-bg" data-name="BG" data-node-id="232:2036"></div>
+            </div>
+        </div>
+        <div class="p5-results" data-name="Results" data-node-id="177:543">
+            <div class="p5-text-title-large" data-node-id="177:544">
+                <p>Let's Summarize The Results!</p>
+            </div>
+            <div class="p5-text-description" data-node-id="177:545">
+                {{resultsDescriptionHtml}}
+            </div>
+        </div>
+        <div class="p5-final-recommendations" data-name="Final Recommendations" data-node-id="177:466">
+            <div class="p5-recommendations-header" data-node-id="177:467">
+                <div class="p5-header-content" data-node-id="183:601">
+                    <div class="p5-text-title" data-node-id="177:468">
+                        <p>Final Recommendations</p>
+                    </div>
+                    <div class="p5-text-subtitle" data-node-id="183:600">
+                        <p>Implementation will improve your website's performance</p>
+                    </div>
+                </div>
+                <div class="p5-effort-container" data-node-id="177:469">
+                    <div class="p5-text-effort-label" data-node-id="177:470">
+                        <p>Effort:</p>
+                    </div>
+                    <div class="p5-text-effort-value" data-node-id="177:471">
+                        <p>Low</p>
+                    </div>
+                </div>
+            </div>
+            {{finalRecsListHtml}}
+        </div>
+    </div>
+
+    <!-- New Design Page 6 -->
+    <style>
+        /* Page 6 styles from new-design/6/styles.css */
+        .p6-bg-container {
+            align-items: center;
+            display: flex;
+            height: 1123px;
+            justify-content: center;
+            left: 0;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 794px;
+        }
+
+        .p6-bg-wrapper {
+            flex: none;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .p6-bg {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') 50% 5.8% / 120.84% 151.85% no-repeat;
+            height: 1123px;
+            width: 794px;
+        }
+
+        .p6-container {
+            background: #ebebf0;
+            height: 1123px;
+            position: relative;
+            width: 794px;
+            page-break-before: always;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        .p6-footer {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            left: 0;
+            padding: 32px;
+            position: absolute;
+            top: 1027px;
+            width: 794px;
+        }
+
+        .p6-logo {
+            background: url('./assets/fc6342c574beb4a46a825d648fa4490abc66eb73.png') center/cover no-repeat;
+            flex-shrink: 0;
+            height: 32px;
+            width: 132px;
+        }
+
+        .p6-contact-info {
+            align-items: flex-start;
+            display: flex;
+            flex-shrink: 0;
+            gap: 27px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .p6-email-section,
+        .p6-link-section {
+            align-items: center;
+            display: flex;
+            gap: 11px;
+            justify-content: flex-start;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .p6-email-icon,
+        .p6-link-icon {
+            flex-shrink: 0;
+            height: 18px;
+            position: relative;
+            width: 18px;
+        }
+
+        .p6-email-icon img,
+        .p6-link-icon img {
+            display: block;
+            height: 100%;
+            max-width: none;
+            width: 100%;
+        }
+
+        .p6-email-text,
+        .p6-link-text {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p6-email-text p,
+        .p6-link-text p {
+            line-height: 32px;
+            margin: 0;
+        }
+
+        .p6-cta {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+            justify-content: flex-start;
+            left: 32px;
+            position: absolute;
+            top: 108px;
+            width: 730px;
+        }
+
+        .p6-cta-card {
+            align-items: flex-start;
+            background: white;
+            border-radius: 27px;
+            box-shadow: 0px 3px 37px 0px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .p6-cta-content {
+            align-items: center;
+            border-bottom: 1px solid #d1d1d6;
+            display: flex;
+            flex-direction: column;
+            gap: 43px;
+            justify-content: flex-start;
+            padding: 64px;
+            position: relative;
+            width: 100%;
+        }
+
+        .p6-cta-text {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .p6-cta-title {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 43px;
+            font-weight: 700;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p6-cta-title p {
+            line-height: 57px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p6-cta-subtitle {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p6-cta-subtitle p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p6-cta-button {
+            align-items: center;
+            border-radius: 21px;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+            overflow: hidden;
+            padding: 21px 43px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .p6-button-bg-1 {
+            background: url('./assets/4c5cde7ba1ed16763d35b3b1b1a40cb8378f5029.png') center/cover no-repeat;
+            height: 308px;
+            left: -183px;
+            position: absolute;
+            top: -77px;
+            width: 548px;
+        }
+
+        .p6-button-bg-2 {
+            background: url('./assets/adcd5d167bb6b150c82f299b29695ba1c3233230.png') center/cover no-repeat;
+            height: 1411px;
+            left: -317px;
+            position: absolute;
+            top: -1326px;
+            width: 794px;
+        }
+
+        .p6-button-text {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .p6-button-text p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p6-qr-section {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: 21px;
+            justify-content: flex-start;
+            padding: 64px 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .p6-qr-title {
+            color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 27px;
+            font-weight: 600;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p6-qr-title p {
+            line-height: 36px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p6-qr-code {
+            background: white;
+            border-radius: 11px;
+            flex-shrink: 0;
+            height: 213px;
+            overflow: hidden;
+            position: relative;
+            width: 213px;
+        }
+
+        .p6-qr-pattern {
+            height: 100%;
+            left: 0;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .p6-or-divider {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .p6-or-text {
+            color: #636366;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 21px;
+            font-weight: 400;
+            justify-content: center;
+            position: relative;
+        }
+
+        .p6-or-text p {
+            line-height: 32px;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .p6-copyright {
+            color: rgba(255, 255, 255, 0.64);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            font-family: 'SF Pro Display', sans-serif;
+            font-size: 19px;
+            font-weight: 400;
+            justify-content: center;
+            line-height: 0;
+            position: relative;
+        }
+
+        .p6-copyright p {
+            line-height: 32px;
+            margin: 0;
+        }
+    </style>
+    <div class="p6-container" data-name="6" data-node-id="177:659">
+        <div class="p6-bg-container">
+            <div class="p6-bg-wrapper">
+                <div class="p6-bg" data-name="BG" data-node-id="233:3456"></div>
+            </div>
+        </div>
+        <div class="p6-footer" data-name="Footer" data-node-id="177:672">
+            <div class="p6-logo" data-name="image 57" data-node-id="177:673"></div>
+            <div class="p6-contact-info" data-node-id="177:674">
+                <div class="p6-email-section" data-node-id="177:675">
+                    <div class="p6-email-icon" data-name="email" data-node-id="177:676">
+                        <img alt="" src="./assets/db32c445b2172c70b2d828020c0547ee03e19c66.svg">
+                    </div>
+                    <div class="p6-email-text" data-node-id="177:677">
+                        <p>{{contactInfo.email}}</p>
+                    </div>
+                </div>
+                <a href="https://lewux.com/" target="_blank" class="p6-link-section" data-node-id="177:678">
+                    <div class="p6-link-icon" data-name="link" data-node-id="177:679">
+                        <img alt="" src="./assets/4bdd3522f4c7eed264ca4480a60f9b6bc99040c0.svg">
+                    </div>
+                    <div class="p6-link-text" data-node-id="177:680">
+                        <p>{{contactInfo.website}}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="p6-cta" data-name="CTA" data-node-id="177:681">
+            <div class="p6-cta-card" data-node-id="177:682">
+                <div class="p6-cta-content" data-node-id="177:683">
+                    <div class="p6-cta-text" data-node-id="177:684">
+                        <div class="p6-cta-title" data-node-id="177:685">
+                            <p>Ready to improve your site?</p>
+                        </div>
+                        <div class="p6-cta-subtitle" data-node-id="177:686">
+                            <p>Sign up for a free consultation with our experts</p>
+                        </div>
+                    </div>
+                    <a href="https://lewux.com/" target="_blank" class="p6-cta-button" data-node-id="177:687">
+                        <div class="p6-button-bg-1" data-name="image 50" data-node-id="177:688"></div>
+                        <div class="p6-button-bg-2" data-name="image 70" data-node-id="201:821"></div>
+                        <div class="p6-button-text" data-node-id="177:689">
+                            <p>Sign up for consultation</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="p6-qr-section" data-node-id="177:690">
+                    <div class="p6-qr-title" data-node-id="177:691">
+                        <p>Scan QR Code</p>
+                    </div>
+                    <div class="p6-qr-code" data-name="qr 2" data-node-id="177:692">
+                        <img src="./assets/qr-2.svg" alt="QR Code" class="p6-qr-pattern">
+                    </div>
+                </div>
+            </div>
+            <div class="p6-copyright" data-node-id="177:732">
+                <p>© 2025 Lewux. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Dynamically adjusts the font size of the site name to prevent layout shifts
+         * Ensures long site names fit within the container without causing overflow
+         */
+        function adjustSiteNameFontSize() {
+            const siteNameElement = document.querySelector('.text-lewux p');
+            
+            if (!siteNameElement) {
+                return;
+            }
+            
+            const containerWidth = 550; // Maximum available width for the text
+            const baseFontSize = 64; // Default font size from CSS
+            const minFontSize = 32; // Minimum readable font size
+            const textLength = siteNameElement.textContent.trim().length;
+            
+            // Calculate optimal font size based on text length
+            let fontSize = baseFontSize;
+            
+            if (textLength > 15) {
+                // For longer text, reduce font size proportionally
+                fontSize = Math.max(minFontSize, baseFontSize - ((textLength - 15) * 2));
+            }
+            
+            // Create a temporary element to measure actual text width
+            const tempElement = document.createElement('span');
+            tempElement.style.fontFamily = 'SF Pro Display, sans-serif';
+            tempElement.style.fontWeight = '700';
+            tempElement.style.fontSize = fontSize + 'px';
+            tempElement.style.visibility = 'hidden';
+            tempElement.style.position = 'absolute';
+            tempElement.style.whiteSpace = 'nowrap';
+            tempElement.textContent = siteNameElement.textContent;
+            document.body.appendChild(tempElement);
+            
+            // Adjust font size if text still overflows
+            let textWidth = tempElement.offsetWidth;
+            while (textWidth > containerWidth && fontSize > minFontSize) {
+                fontSize -= 2;
+                tempElement.style.fontSize = fontSize + 'px';
+                textWidth = tempElement.offsetWidth;
+            }
+            
+            // Clean up temporary element
+            document.body.removeChild(tempElement);
+            
+            // Apply the calculated font size
+            siteNameElement.parentElement.style.fontSize = fontSize + 'px';
+            siteNameElement.style.lineHeight = fontSize + 11 + 'px'; // Maintain proportional line-height
+        }
+        
+        // Execute when DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', adjustSiteNameFontSize);
+        } else {
+            adjustSiteNameFontSize();
+        }
+    </script>
+
+</body>
+
+</html>

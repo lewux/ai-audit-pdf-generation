@@ -1,0 +1,917 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "AI Audit PDF Server API",
+		"description": "Complete API collection for the AI Audit PDF Server with all endpoints and test data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Generate Token (Test Mode)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token');",
+									"    pm.expect(jsonData.token).to.be.a('string');",
+									"    pm.expect(jsonData.token.length).to.be.greaterThan(100);",
+									"});",
+									"",
+									"pm.test(\"Token type is Bearer\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token_type');",
+									"    pm.expect(jsonData.token_type).to.eql('Bearer');",
+									"});",
+									"",
+									"// Automatically save token to environment",
+									"if (pm.response.json().success && pm.response.json().token) {",
+									"    pm.environment.set('jwt_token', pm.response.json().token);",
+									"    console.log('✅ Token saved to environment variable: jwt_token');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"test\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"token"
+							]
+						},
+						"description": "Generate a JWT token in test mode (no credentials required). The token is automatically saved to the environment variable 'jwt_token' for use in other requests."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Token (Production Mode)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token');",
+									"    pm.expect(jsonData.token).to.be.a('string');",
+									"});",
+									"",
+									"// Automatically save token to environment",
+									"if (pm.response.json().success && pm.response.json().token) {",
+									"    pm.environment.set('jwt_token', pm.response.json().token);",
+									"    console.log('✅ Token saved to environment variable: jwt_token');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"client_id\": \"{{client_id}}\",\n  \"client_secret\": \"{{client_secret}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"token"
+							]
+						},
+						"description": "Generate a JWT token using client credentials (production mode). Requires API_CLIENT_ID and API_CLIENT_SECRET to be configured in server's .env file."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Token is valid\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData).to.have.property('valid');",
+									"    pm.expect(jsonData.valid).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has payload\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('payload');",
+									"    pm.expect(jsonData.payload).to.have.property('userId');",
+									"    pm.expect(jsonData.payload).to.have.property('email');",
+									"});",
+									"",
+									"pm.test(\"Response has expiration date\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('expires_at');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify"
+							]
+						},
+						"description": "Verify if a JWT token is valid and get its payload information including expiration date."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has new token\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token');",
+									"    pm.expect(jsonData.token).to.be.a('string');",
+									"});",
+									"",
+									"// Automatically save refreshed token to environment",
+									"if (pm.response.json().success && pm.response.json().token) {",
+									"    pm.environment.set('jwt_token', pm.response.json().token);",
+									"    console.log('✅ Refreshed token saved to environment variable: jwt_token');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh an existing JWT token to extend its expiration time. The new token is automatically saved to the environment."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for token generation, verification, and refresh"
+		},
+		{
+			"name": "Health & Status",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has status field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.eql('healthy');",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Check server health status. No authentication required."
+					},
+					"response": []
+				}
+			],
+			"description": "Health check and server status endpoints"
+		},
+		{
+			"name": "PDF Generation",
+			"item": [
+				{
+					"name": "Generate PDF - Basic Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has pdf_url\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('pdf_url');",
+									"    pm.expect(jsonData.pdf_url).to.include('/files/');",
+									"});",
+									"",
+									"pm.test(\"Response has file_size\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('file_size');",
+									"    pm.expect(jsonData.file_size).to.be.a('number');",
+									"});",
+									"",
+									"// Store filename for download tests",
+									"if (pm.response.json().success) {",
+									"    const filename = pm.response.json().pdf_url.split('/').pop();",
+									"    pm.environment.set('last_pdf_filename', filename);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"Test Site\",\n      \"site_url\": \"https://test.com\",\n      \"audit_date\": \"2025-09-29\",\n      \"site_description\": \"Basic test site for PDF generation\"\n    },\n    \"lighthouse_scores\": {\n      \"mobile\": {\n        \"total_score\": 85,\n        \"performance\": 88,\n        \"accessibility\": 95,\n        \"best_practices\": 92,\n        \"seo\": 65,\n        \"summary\": \"Good performance with room for SEO improvement\"\n      },\n      \"desktop\": {\n        \"total_score\": 90,\n        \"performance\": 95,\n        \"accessibility\": 98,\n        \"best_practices\": 95,\n        \"seo\": 70,\n        \"summary\": \"Excellent performance, focus on SEO optimization\"\n      }\n    },\n    \"performance_metrics\": {\n      \"mobile\": {\n        \"fcp\": \"2.8 s\",\n        \"lcp\": \"3.2 s\",\n        \"tbt\": \"50 ms\",\n        \"cls\": \"0.018\",\n        \"si\": \"2.9 s\"\n      },\n      \"desktop\": {\n        \"fcp\": \"0.9 s\",\n        \"lcp\": \"1.2 s\",\n        \"tbt\": \"15 ms\",\n        \"cls\": \"0.001\",\n        \"si\": \"1.0 s\"\n      },\n      \"recommendations\": [\n        \"Optimize images for faster loading\",\n        \"Implement caching strategies\",\n        \"Minimize JavaScript execution time\"\n      ]\n    },\n    \"seo_analysis\": {\n      \"metrics\": {\n        \"hreflang\": 1,\n        \"canonical\": 1,\n        \"image_alt\": 0,\n        \"link_text\": 0,\n        \"is_crawlable\": 1,\n        \"document_title\": 1,\n        \"structured_data\": 0,\n        \"meta_description\": 0\n      },\n      \"recommendations\": [\n        \"Add alt attributes to all images\",\n        \"Improve link text descriptions\",\n        \"Implement structured data markup\",\n        \"Add meta descriptions to all pages\"\n      ]\n    },\n    \"accessibility_best_practices\": {\n      \"accessibility_score\": \"95 out of 100\",\n      \"best_practices_score\": \"92 out of 100\",\n      \"accessibility_metrics\": {\n        \"color_contrast\": 1,\n        \"aria_attributes\": 1,\n        \"semantic_elements\": 0\n      },\n      \"best_practices_metrics\": {\n        \"https\": 1,\n        \"deprecations\": 1,\n        \"errors_in_console\": 0,\n        \"third_party_cookies\": 1\n      },\n      \"recommendations\": [\n        \"Add semantic HTML elements\",\n        \"Fix console errors\",\n        \"Ensure all interactive elements have proper focus indicators\"\n      ]\n    },\n    \"final_conclusion\": {\n      \"main_recommendations\": [\n        \"Prioritize SEO improvements for better search visibility\",\n        \"Address accessibility issues for inclusive design\",\n        \"Continue monitoring performance metrics\"\n      ],\n      \"next_steps\": \"Focus on the identified SEO and accessibility improvements to enhance overall site quality and user experience.\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Generate a PDF report with basic test data. This is the main endpoint for PDF generation."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate PDF - Comprehensive Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has pdf_url\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('pdf_url');",
+									"    pm.expect(jsonData.pdf_url).to.include('/files/');",
+									"});",
+									"",
+									"pm.test(\"Generation time is reasonable\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('generation_time');",
+									"    const timeMs = parseInt(jsonData.generation_time.replace('ms', ''));",
+									"    pm.expect(timeMs).to.be.below(30000); // Less than 30 seconds",
+									"});",
+									"",
+									"// Store filename for download tests",
+									"if (pm.response.json().success) {",
+									"    const filename = pm.response.json().pdf_url.split('/').pop();",
+									"    pm.environment.set('last_pdf_filename', filename);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"Lewux Digital Agency\",\n      \"site_url\": \"https://lewux.com\",\n      \"audit_date\": \"2025-09-29\",\n      \"site_description\": \"Lewux is a modern digital solutions agency specializing in website development, design, and marketing. The company helps businesses grow online by providing comprehensive web services and personalized approaches.\"\n    },\n    \"lighthouse_scores\": {\n      \"mobile\": {\n        \"total_score\": 84,\n        \"performance\": 86,\n        \"accessibility\": 98,\n        \"best_practices\": 96,\n        \"seo\": 54,\n        \"summary\": \"The site demonstrates good technical performance and high accessibility. However, SEO needs improvement as it is crucial for attracting traffic and improving search visibility.\"\n      },\n      \"desktop\": {\n        \"total_score\": 88,\n        \"performance\": 98,\n        \"accessibility\": 98,\n        \"best_practices\": 100,\n        \"seo\": 54,\n        \"summary\": \"The site is in excellent technical condition. High performance, accessibility, and adherence to best practices. However, SEO needs to be strengthened.\"\n      }\n    },\n    \"performance_metrics\": {\n      \"mobile\": {\n        \"fcp\": \"3.1 s\",\n        \"lcp\": \"3.4 s\",\n        \"tbt\": \"0 ms\",\n        \"cls\": \"0.021\",\n        \"si\": \"3.1 s\"\n      },\n      \"desktop\": {\n        \"fcp\": \"0.8 s\",\n        \"lcp\": \"1.1 s\",\n        \"tbt\": \"10 ms\",\n        \"cls\": \"0\",\n        \"si\": \"0.8 s\"\n      },\n      \"recommendations\": [\n        \"Reduce the number of external scripts and use caching.\",\n        \"Use modern image formats and enable lazy loading.\",\n        \"Check the loading order of styles and scripts to speed up rendering.\"\n      ]\n    },\n    \"seo_analysis\": {\n      \"metrics\": {\n        \"hreflang\": 1,\n        \"canonical\": 1,\n        \"image_alt\": 0,\n        \"link_text\": 0,\n        \"is_crawlable\": 1,\n        \"document_title\": 1,\n        \"structured_data\": 0,\n        \"meta_description\": 0,\n        \"http_status_code\": 200\n      },\n      \"recommendations\": [\n        \"Add alt attributes to images for better SEO and accessibility\",\n        \"Improve link text to be more descriptive and informative\",\n        \"Implement structured data markup (Schema.org) for rich snippets\",\n        \"Add comprehensive meta descriptions to all pages\",\n        \"Optimize page titles for better search visibility\"\n      ]\n    },\n    \"accessibility_best_practices\": {\n      \"accessibility_score\": \"98 out of 100\",\n      \"best_practices_score\": \"96 out of 100\",\n      \"accessibility_metrics\": {\n        \"color_contrast\": 1,\n        \"aria_attributes\": 1,\n        \"semantic_elements\": 1\n      },\n      \"best_practices_metrics\": {\n        \"https\": 1,\n        \"deprecations\": 1,\n        \"errors_in_console\": 0,\n        \"third_party_cookies\": 1\n      },\n      \"recommendations\": [\n        \"Fix console errors to improve site stability\",\n        \"Ensure all interactive elements have proper focus indicators\",\n        \"Test with screen readers for better accessibility\"\n      ]\n    },\n    \"final_conclusion\": {\n      \"main_recommendations\": [\n        \"Prioritize SEO improvements for better search visibility and organic traffic\",\n        \"Address remaining accessibility issues for inclusive design\",\n        \"Continue monitoring performance metrics and user experience\",\n        \"Implement structured data for enhanced search results\"\n      ],\n      \"next_steps\": \"The site shows excellent technical performance and accessibility. The primary focus should be on SEO improvements to increase organic traffic and search visibility. Implement the recommended SEO optimizations and continue monitoring performance metrics.\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Generate a PDF report with comprehensive real-world data similar to the original Lewux audit."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate PDF - Minimal Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has pdf_url\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('pdf_url');",
+									"    pm.expect(jsonData.pdf_url).to.include('/files/');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"Minimal Test\",\n      \"site_url\": \"https://minimal.com\",\n      \"audit_date\": \"2025-09-29\",\n      \"site_description\": \"Minimal test data\"\n    },\n    \"lighthouse_scores\": {\n      \"mobile\": {\n        \"total_score\": 75,\n        \"performance\": 80,\n        \"accessibility\": 90,\n        \"best_practices\": 85,\n        \"seo\": 50,\n        \"summary\": \"Basic performance metrics\"\n      },\n      \"desktop\": {\n        \"total_score\": 80,\n        \"performance\": 85,\n        \"accessibility\": 92,\n        \"best_practices\": 88,\n        \"seo\": 55,\n        \"summary\": \"Good desktop performance\"\n      }\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Generate a PDF with minimal required data to test the endpoint with bare minimum input."
+					},
+					"response": []
+				}
+			],
+			"description": "PDF generation endpoints with different data sets"
+		},
+		{
+			"name": "File Management",
+			"item": [
+				{
+					"name": "Download PDF File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is PDF file\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/pdf');",
+									"});",
+									"",
+									"pm.test(\"Response has content\", function () {",
+									"    pm.expect(pm.response.responseSize).to.be.greaterThan(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/download/{{last_pdf_filename}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"download",
+								"{{last_pdf_filename}}"
+							]
+						},
+						"description": "Download a PDF file. Uses the filename from the last generated PDF."
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has file info\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('filename');",
+									"    pm.expect(jsonData).to.have.property('size');",
+									"    pm.expect(jsonData).to.have.property('created');",
+									"    pm.expect(jsonData).to.have.property('modified');",
+									"});",
+									"",
+									"pm.test(\"File size is reasonable\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.size).to.be.greaterThan(100000); // At least 100KB",
+									"    pm.expect(jsonData.size).to.be.lessThan(10000000); // Less than 10MB",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/download/info/{{last_pdf_filename}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"download",
+								"info",
+								"{{last_pdf_filename}}"
+							]
+						},
+						"description": "Get information about a PDF file without downloading it. Uses the filename from the last generated PDF."
+					},
+					"response": []
+				},
+				{
+					"name": "Download PDF - Manual Filename",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response is PDF file\", function () {",
+									"        pm.expect(pm.response.headers.get('Content-Type')).to.include('application/pdf');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/download/report-20250929-182224.pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"download",
+								"report-20250929-182224.pdf"
+							]
+						},
+						"description": "Download a specific PDF file by providing the filename manually. Change the filename in the URL as needed."
+					},
+					"response": []
+				}
+			],
+			"description": "File download and management endpoints"
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "Generate PDF - No Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Response has error message\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('Access token required');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"Test Site\",\n      \"site_url\": \"https://test.com\",\n      \"audit_date\": \"2025-09-29\",\n      \"site_description\": \"Test description\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Test PDF generation without authentication - should return 401 error."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate PDF - Invalid Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Response has error message\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('Invalid or expired token');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid-token-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"Test Site\",\n      \"site_url\": \"https://test.com\",\n      \"audit_date\": \"2025-09-29\",\n      \"site_description\": \"Test description\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Test PDF generation with invalid JWT token - should return 403 error."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate PDF - Invalid Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has error message\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"general_info\": {\n      \"site_name\": \"\",\n      \"site_url\": \"invalid-url\",\n      \"audit_date\": \"\",\n      \"site_description\": \"Test description\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf"
+							]
+						},
+						"description": "Test PDF generation with invalid/missing required data - should return 400 validation error."
+					},
+					"response": []
+				},
+				{
+					"name": "Download Non-existent File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Response has error message\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('File not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/download/nonexistent-file.pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"download",
+								"nonexistent-file.pdf"
+							]
+						},
+						"description": "Test downloading a non-existent file - should return 404 error."
+					},
+					"response": []
+				}
+			],
+			"description": "Error handling and edge case testing"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set default values if not already set",
+					"if (!pm.environment.get('base_url')) {",
+					"    pm.environment.set('base_url', 'http://localhost:3001');",
+					"}",
+					"",
+					"if (!pm.environment.get('jwt_token')) {",
+					"    pm.environment.set('jwt_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXIiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTkxNTk0MzcsImV4cCI6MTc1OTI0NTgzN30.4kIMfvQXSmjJz65TTT3ZVjWxxXLN56wBtkp1-oVFi1E');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test(\"Response time is reasonable\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(60000); // Less than 60 seconds",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3001",
+			"description": "Base URL for the AI Audit PDF Server"
+		},
+		{
+			"key": "jwt_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXIiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTkxNjAwMTksImV4cCI6MTc1OTI0NjQxOX0.oCVpQZs8EQC_M6hf65gWA1Ao1OAMamWW_GGRAKKUhE8",
+			"description": "JWT token for authentication"
+		}
+	]
+}

@@ -1,0 +1,268 @@
+/* Dark theme for PDF reports */
+@page {
+    size: A4;
+    margin: 0;
+}
+
+html,
+body {
+    background: #0a0f1c !important;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: #e5e7eb;
+}
+
+/* Dark theme overrides */
+.bg-gray-50 {
+    background-color: #1f2937;
+}
+
+.bg-white {
+    background-color: #374151;
+}
+
+.bg-gradient-to-r {
+    background: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.from-blue-600 {
+    --tw-gradient-from: #1d4ed8;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(29, 78, 216, 0));
+}
+
+.to-purple-600 {
+    --tw-gradient-to: #7c3aed;
+}
+
+/* Text colors for dark theme */
+.text-gray-600 {
+    color: #d1d5db;
+}
+
+.text-gray-700 {
+    color: #e5e7eb;
+}
+
+.text-gray-800 {
+    color: #f3f4f6;
+}
+
+.text-gray-900 {
+    color: #ffffff;
+}
+
+/* Card backgrounds */
+.bg-blue-50 {
+    background-color: #1e3a8a;
+}
+
+.bg-green-100 {
+    background-color: #065f46;
+}
+
+.bg-red-100 {
+    background-color: #7f1d1d;
+}
+
+.bg-yellow-100 {
+    background-color: #92400e;
+}
+
+/* Border colors */
+.border-blue-200 {
+    border-color: #1e40af;
+}
+
+.border-red-500 {
+    border-color: #dc2626;
+}
+
+/* Progress bars */
+.bg-gray-200 {
+    background-color: #4b5563;
+}
+
+/* Ensure proper contrast */
+.text-blue-100 {
+    color: #bfdbfe;
+}
+
+.text-red-500 {
+    color: #f87171;
+}
+
+/* Footer dark theme */
+.bg-gray-800 {
+    background: #232946;
+}
+
+.text-gray-400 {
+    color: #9ca3af;
+}
+
+.border-gray-700 {
+    border-color: #475569;
+}
+
+/* Chart colors for dark theme */
+.chart-container {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+/* Print-specific dark theme */
+@media print {
+
+    html,
+    body {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        background: #0a0f1c !important;
+    }
+
+    .bg-card-bg {
+        background: #181f2e !important;
+    }
+
+    .text-neon-blue {
+        color: #3B82F6 !important;
+    }
+
+    .text-neon-cyan {
+        color: #06b6d4 !important;
+    }
+
+    .text-neon-purple {
+        color: #A21CAF !important;
+    }
+
+    .text-neon-pink {
+        color: #ec4899 !important;
+    }
+}
+
+.bg-dark-bg {
+    background: #0a0f1c;
+}
+
+.bg-card-bg {
+    background: #181f2e;
+}
+
+.text-neon-blue {
+    color: #3B82F6;
+}
+
+.text-neon-purple {
+    color: #A21CAF;
+}
+
+.text-neon-cyan {
+    color: #06b6d4;
+}
+
+.text-neon-pink {
+    color: #ec4899;
+}
+
+.bg-neon-blue {
+    background: #3B82F6;
+}
+
+.bg-neon-purple {
+    background: #A21CAF;
+}
+
+.bg-neon-cyan {
+    background: #06b6d4;
+}
+
+.bg-neon-pink {
+    background: #ec4899;
+}
+
+.shadow-neon {
+    box-shadow: 0 4px 32px 0 rgba(59, 130, 246, 0.15), 0 1.5px 8px 0 rgba(162, 28, 175, 0.10);
+}
+
+.shadow-glow {
+    box-shadow: 0 0 16px 2px #3B82F6, 0 2px 8px 0 #181f2e;
+}
+
+.shadow-glow-cyan {
+    box-shadow: 0 0 16px 2px #06b6d4, 0 2px 8px 0 #181f2e;
+}
+
+.shadow-glow-purple {
+    box-shadow: 0 0 16px 2px #A21CAF, 0 2px 8px 0 #181f2e;
+}
+
+.shadow-glow-pink {
+    box-shadow: 0 0 16px 2px #ec4899, 0 2px 8px 0 #181f2e;
+}
+
+.drop-shadow-glow {
+    filter: drop-shadow(0 0 8px #3B82F6) drop-shadow(0 0 2px #A21CAF);
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #181f2e 80%, #3B82F6 100%);
+    border-radius: 1rem;
+    box-shadow: 0 2px 16px 0 rgba(59, 130, 246, 0.10), 0 1.5px 8px 0 rgba(162, 28, 175, 0.10);
+    padding: 1.5rem;
+}
+
+/* Progress bars */
+.bg-gray-800 {
+    background: #232946;
+}
+
+.rounded-2xl {
+    border-radius: 1rem;
+}
+
+/* CTA button */
+.shadow-glow-btn {
+    box-shadow: 0 0 24px 4px #3B82F6, 0 2px 8px 0 #181f2e;
+}
+
+a,
+.hover\:text-neon-blue:hover {
+    color: #3B82F6;
+}
+
+a,
+.hover\:text-neon-pink:hover {
+    color: #ec4899;
+}
+
+a,
+.hover\:text-neon-cyan:hover {
+    color: #06b6d4;
+}
+
+/* Social icons */
+svg {
+    vertical-align: middle;
+}
+
+/* Footer */
+footer {
+    background: transparent;
+}
+
+/* Chart.js tweaks for neon */
+canvas {
+    background: transparent;
+    border-radius: 1rem;
+}
+
+/* Utility */
+.text-shadow {
+    text-shadow: 0 2px 8px #3B82F6, 0 1px 2px #181f2e;
+}
