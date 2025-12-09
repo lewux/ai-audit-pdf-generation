@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - cd /home/creasite/domains/ai-audit-pdf.lewux.com
+    - git pull origin main
+    - npm install --production
+    - pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+
