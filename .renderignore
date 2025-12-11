@@ -1,0 +1,14 @@
+# Исключения для Render
+node_modules/
+.git/
+.env
+.env.local
+*.log
+logs/
+uploads/*.pdf
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
