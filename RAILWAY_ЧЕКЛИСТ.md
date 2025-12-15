@@ -73,3 +73,4 @@ ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
 - Помните: файлы теряются при редеплое
 - Используйте Railway Volumes для постоянного хранения
 - Или настройте внешнее хранилище
+
