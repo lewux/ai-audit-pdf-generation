@@ -21,6 +21,10 @@ const PORT = process.env.PORT || 3001;
 // Railway требует слушать на 0.0.0.0, а не localhost
 const HOST = process.env.HOST || '0.0.0.0';
 
+// Trust proxy for Railway (fixes X-Forwarded-For issues with express-rate-limit)
+// Railway uses a reverse proxy, so we need to trust the first proxy
+app.set('trust proxy', 1);
+
 // Ensure required directories exist
 const ensureDirectories = async () => {
     try {

@@ -372,47 +372,63 @@ class PDFGenerator {
             // Find Chromium path dynamically
             const chromiumPath = getChromiumPath();
             
+            // Base launch args for containerized environments
+            const baseArgs = [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu',
+                '--disable-software-rasterizer',
+                '--disable-extensions',
+                '--disable-background-networking',
+                '--disable-background-timer-throttling',
+                '--disable-renderer-backgrounding',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-breakpad',
+                '--disable-component-extensions-with-background-pages',
+                '--disable-features=TranslateUI',
+                '--disable-ipc-flooding-protection',
+                '--disable-sync',
+                '--metrics-recording-only',
+                '--mute-audio',
+                '--no-default-browser-check',
+                '--no-pings',
+                '--use-mock-keychain',
+                '--single-process', // For Railway - reduces memory usage
+                '--font-render-hinting=none' // Better font rendering in headless
+            ];
+            
             // Build launch options
             const launchOptions = {
                 headless: 'new', // Use new headless mode (fixes deprecation warning)
                 devtools: false,
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-accelerated-2d-canvas',
-                    '--no-first-run',
-                    '--no-zygote',
-                    '--disable-gpu',
-                    '--disable-software-rasterizer',
-                    '--disable-extensions',
-                    '--disable-background-networking',
-                    '--disable-background-timer-throttling',
-                    '--disable-renderer-backgrounding',
-                    '--disable-backgrounding-occluded-windows',
-                    '--disable-breakpad',
-                    '--disable-component-extensions-with-background-pages',
-                    '--disable-features=TranslateUI',
-                    '--disable-ipc-flooding-protection',
-                    '--disable-sync',
-                    '--metrics-recording-only',
-                    '--mute-audio',
-                    '--no-default-browser-check',
-                    '--no-pings',
-                    '--use-mock-keychain',
-                    '--single-process' // For Railway - reduces memory usage
-                ]
+                args: baseArgs
             };
             
-            // Only set executablePath if we found a system Chromium
+            // Try system Chromium first, then fall back to bundled
             if (chromiumPath) {
                 launchOptions.executablePath = chromiumPath;
-                console.log(`Using Chromium at: ${chromiumPath}`);
+                console.log(`Attempting to use Chromium at: ${chromiumPath}`);
+                
+                try {
+                    browser = await puppeteer.launch(launchOptions);
+                    console.log('Successfully launched system Chromium');
+                } catch (systemError) {
+                    console.error('Failed to launch system Chromium:', systemError.message);
+                    console.log('Falling back to Puppeteer bundled Chromium...');
+                    
+                    // Remove executablePath to use bundled Chromium
+                    delete launchOptions.executablePath;
+                    browser = await puppeteer.launch(launchOptions);
+                    console.log('Successfully launched bundled Chromium');
+                }
             } else {
                 console.log('Using Puppeteer bundled Chromium');
+                browser = await puppeteer.launch(launchOptions);
             }
-            
-            browser = await puppeteer.launch(launchOptions);
 
             const page = await browser.newPage();
 

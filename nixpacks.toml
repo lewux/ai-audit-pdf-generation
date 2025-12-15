@@ -42,9 +42,9 @@ cmds = ["npm run build"]
 cmd = "node server.js"
 
 [variables]
-# Skip downloading Chromium since we install it via nixpkgs
-PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
-# Disable Puppeteer cache
+# Allow Puppeteer to download bundled Chromium as fallback
+# PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "false"
+# Puppeteer cache directory
 PUPPETEER_CACHE_DIR = "/tmp/.cache/puppeteer"
 # Node environment
 NODE_ENV = "production"

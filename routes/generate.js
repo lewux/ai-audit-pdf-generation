@@ -28,6 +28,10 @@ router.post('/', async (req, res) => {
         });
 
     } catch (error) {
+        // Log full error for debugging
+        console.error('PDF Generation Error:', error);
+        console.error('Error stack:', error.stack);
+        
         res.status(500).json({
             success: false,
             error: error.message
