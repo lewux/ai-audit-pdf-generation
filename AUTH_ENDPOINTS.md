@@ -5,61 +5,13 @@ The PDF server now includes authentication endpoints to generate and manage JWT 
 
 ## Endpoints
 
-### 1. Generate Token (Development/Test Mode)
+### 1. Generate Token
 
 **Endpoint:** `POST /api/auth/token`
 
-**Description:** Generate a JWT token for API authentication. In development mode, you can generate tokens without credentials.
+**Description:** Generate a JWT token for API authentication. Requires valid client credentials (`API_CLIENT_ID` and `API_CLIENT_SECRET` must be configured on the server).
 
-**Request Body (Test Mode):**
-```json
-{
-  "test": true
-}
-```
-
-**Optional Parameters:**
-```json
-{
-  "test": true,
-  "userId": "custom-user-id",
-  "email": "user@example.com",
-  "role": "admin"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "Bearer",
-  "expires_in": "24h",
-  "payload": {
-    "userId": "test-user",
-    "email": "test@example.com",
-    "role": "admin",
-    "client_id": "test-client",
-    "generated_at": "2025-10-22T12:35:03.404Z"
-  },
-  "usage": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:3001/api/auth/token \
-  -H "Content-Type: application/json" \
-  -d '{"test": true}'
-```
-
----
-
-### 2. Generate Token (Production Mode)
-
-**Endpoint:** `POST /api/auth/token`
-
-**Description:** Generate a JWT token using client credentials. Requires `API_CLIENT_ID` and `API_CLIENT_SECRET` to be set in `.env` file.
+**Security:** This endpoint is protected by strict rate limiting (5 attempts per 15 minutes) to prevent brute force attacks.
 
 **Request Body:**
 ```json
@@ -80,7 +32,15 @@ curl -X POST http://localhost:3001/api/auth/token \
 }
 ```
 
-**Response:** Same as test mode
+**Response:**
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": "24h"
+}
+```
 
 **cURL Example:**
 ```bash
@@ -224,11 +184,12 @@ API_CLIENT_SECRET=your-client-secret
 
 ## Security Notes
 
-- **Development Mode**: When `NODE_ENV=development`, you can use `{"test": true}` to generate tokens without credentials
-- **Production Mode**: Always use proper client credentials in production
+- **Credentials Required**: Client credentials (`client_id` and `client_secret`) are always required to generate tokens. Test mode has been removed for security.
+- **Rate Limiting**: Token generation endpoint is protected by strict rate limiting (5 attempts per 15 minutes) to prevent brute force attacks.
 - **Token Expiry**: Tokens expire after 24 hours by default (configurable via `JWT_EXPIRY`)
 - **HTTPS**: Always use HTTPS in production to protect tokens in transit
 - **Secret Storage**: Never commit your `JWT_SECRET` or credentials to version control
+- **Environment Variables**: Set `API_CLIENT_ID` and `API_CLIENT_SECRET` in your Railway environment variables
 
 ---
 

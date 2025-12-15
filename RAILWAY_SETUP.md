@@ -1,97 +1,153 @@
-# Настройка проекта для Railway
+# Railway Setup Guide
 
-## Оптимизации для быстрого билда
+## Project Optimizations
 
-Проект оптимизирован для Railway с фокусом на скорость сборки и деплоя.
+This project is optimized for Railway deployment with focus on build speed and security.
 
-## Настройки Railway
+## Railway Configuration
 
-### 1. Переменные окружения (Environment Variables)
+### 1. Environment Variables (REQUIRED)
 
-В настройках Railway добавьте следующие переменные:
+Add these in Railway Dashboard → Variables:
 
-#### Обязательные:
+#### Required:
 ```
 NODE_ENV=production
 PORT=3001
+JWT_SECRET=<generate: openssl rand -base64 32>
+API_CLIENT_ID=<your client id, e.g.: my-wordpress-site>
+API_CLIENT_SECRET=<generate: openssl rand -base64 32>
+ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
 ```
 
-#### Опциональные (для оптимизации):
+#### Optional (for optimization):
 ```
 PUPPETEER_CACHE_DIR=/tmp/.cache/puppeteer
 NPM_CONFIG_CACHE=/tmp/.npm
+AUTH_RATE_LIMIT=5
+API_RATE_LIMIT=10
+JWT_EXPIRY=24h
 ```
 
-### 2. Настройки Build
+### 2. Generate Credentials
 
-Railway автоматически обнаружит `railway.json` и использует оптимизированные настройки:
+**On macOS/Linux:**
+```bash
+# For JWT_SECRET
+openssl rand -base64 32
 
-- **Builder**: NIXPACKS (автоматически определяет Node.js)
-- **Build Command**: `npm ci --prefer-offline --no-audit` (быстрая установка без аудита)
+# For API_CLIENT_SECRET
+openssl rand -base64 32
+```
+
+**Or using Node.js:**
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+### 3. Build Settings
+
+Railway will automatically detect `railway.json` and use optimized settings:
+
+- **Builder**: NIXPACKS (auto-detects Node.js)
+- **Build Command**: `npm ci --prefer-offline --no-audit` (fast install)
 - **Start Command**: `npm start`
 
-### 3. Рекомендуемые настройки Railway
+#### Build Settings in Dashboard:
+1. **Build Command**: Leave empty (Railway uses `railway.json`)
+2. **Start Command**: Leave empty (Railway uses `railway.json`)
 
-#### Build Settings:
-1. **Build Command**: Оставьте пустым (Railway использует `railway.json`)
-2. **Start Command**: Оставьте пустым (Railway использует `railway.json`)
+### 4. Resource Settings
 
-#### Resource Settings:
-- **Memory**: Минимум 512MB (рекомендуется 1GB для Puppeteer)
-- **CPU**: Стандартный план ($20/месяц)
+- **Memory**: Minimum 512MB (recommended 1GB for Puppeteer)
+- **CPU**: Standard plan
 
-#### Deployment Settings:
-- **Auto Deploy**: Включено (автоматический деплой при push в main)
-- **Branch**: `main` (или ваша основная ветка)
+### 5. Deployment Settings
 
-### 4. Оптимизации в проекте
+- **Auto Deploy**: Enabled (auto-deploy on push to main)
+- **Branch**: `main` (or your main branch)
 
-#### Файлы конфигурации:
-- `.railwayignore` - исключает ненужные файлы из деплоя
-- `.npmrc` - оптимизирует установку npm пакетов
-- `railway.json` - настройки билда и деплоя
+## 🔐 Security Features
 
-#### Puppeteer оптимизации:
-- Использует `--single-process` для Railway (меньше памяти)
-- Отключены ненужные функции браузера
-- Кэширование Chromium в `/tmp/.cache/puppeteer`
+### Authentication Protection:
 
-### 5. Мониторинг билда
+1. **Required credentials** - tokens require valid `client_id` and `client_secret`
+2. **Strict rate limiting** - 5 token attempts per 15 minutes
+3. **JWT expiration** - tokens expire after 24 hours
+4. **Env-based secrets** - credentials stored only in Railway, not in code
 
-Для отслеживания времени билда:
-1. Перейдите в Railway Dashboard
-2. Откройте ваш проект
-3. Вкладка "Deployments" покажет время каждого билда
+### Getting a Token:
 
-### 6. Устранение проблем
+```bash
+curl -X POST https://ai-audit-pdf-generation-production.up.railway.app/api/auth/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret"
+  }'
+```
 
-#### Медленный билд:
-- Проверьте, что `.railwayignore` правильно исключает файлы
-- Убедитесь, что `package-lock.json` закоммичен
-- Проверьте размер репозитория (должен быть < 100MB без node_modules)
+## Project Optimizations
 
-#### Ошибки Puppeteer:
-- Убедитесь, что выделено достаточно памяти (минимум 512MB)
-- Проверьте переменные окружения `PUPPETEER_CACHE_DIR`
+### Configuration Files:
+- `.railwayignore` - excludes unnecessary files from deploy
+- `.npmrc` - optimizes npm package installation
+- `railway.json` - build and deploy settings
 
-#### Ошибки установки зависимостей:
-- Проверьте `.npmrc` файл
-- Убедитесь, что версии Node.js совместимы (>= 18.0.0)
+### Puppeteer Optimizations:
+- Uses `--single-process` for Railway (less memory)
+- Unnecessary browser features disabled
+- Chromium cached in `/tmp/.cache/puppeteer`
 
-## Ожидаемое время билда
+## Monitoring Build
 
-После оптимизации:
-- **Первая сборка**: 3-5 минут (скачивание Chromium)
-- **Последующие сборки**: 1-2 минуты (с кэшем)
+To track build time:
+1. Go to Railway Dashboard
+2. Open your project
+3. "Deployments" tab shows build time for each deploy
 
-## Дополнительные оптимизации
+## Expected Build Times
 
-### Использование Railway Build Cache:
-Railway автоматически кэширует:
-- `node_modules/` между билдами
-- Chromium из Puppeteer (если `PUPPETEER_CACHE_DIR` установлен)
+After optimization:
+- **First build**: 3-5 minutes (downloading Chromium)
+- **Subsequent builds**: 1-2 minutes (with cache)
 
-### Мониторинг:
-- Используйте Railway Metrics для отслеживания использования ресурсов
-- Настройте алерты при превышении лимитов
+## Troubleshooting
 
+### Slow build (>5 minutes):
+- Check that `.railwayignore` properly excludes files
+- Ensure `package-lock.json` is committed
+- Check repository size (should be < 100MB without node_modules)
+
+### Puppeteer errors:
+- Ensure enough memory is allocated (minimum 512MB)
+- Check `PUPPETEER_CACHE_DIR` environment variable
+
+### "Invalid credentials":
+- Check `API_CLIENT_ID` and `API_CLIENT_SECRET` in Railway Variables
+- Ensure you're using correct values in requests
+
+### "Too many authentication attempts":
+- Rate limiting: wait 15 minutes
+- Or increase `AUTH_RATE_LIMIT` in variables
+
+### Dependency installation errors:
+- Check `.npmrc` file
+- Ensure Node.js version is compatible (>= 18.0.0)
+
+## Additional Optimizations
+
+### Railway Build Cache:
+Railway automatically caches:
+- `node_modules/` between builds
+- Chromium from Puppeteer (if `PUPPETEER_CACHE_DIR` is set)
+
+### Monitoring:
+- Use Railway Metrics to track resource usage
+- Set up alerts when limits are exceeded
+
+## Documentation
+
+- `AUTH_ENDPOINTS.md` - Authentication documentation
+- `API_ENDPOINTS.md` - API documentation
+- `QUICK_START.md` - Quick start guide

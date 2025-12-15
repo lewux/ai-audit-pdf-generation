@@ -13,7 +13,7 @@ const healthRoutes = require('./routes/health');
 const downloadRoutes = require('./routes/download');
 
 // Import middleware
-const rateLimitMiddleware = require('./middleware/rate-limit');
+const { default: rateLimitMiddleware, auth: authRateLimitMiddleware } = require('./middleware/rate-limit');
 const authMiddleware = require('./middleware/auth');
 
 const app = express();
@@ -67,6 +67,8 @@ app.use('/api/', rateLimitMiddleware);
 
 // Routes
 app.use('/api/health', healthRoutes);
+// Apply strict rate limiting to auth endpoints (especially token generation)
+app.use('/api/auth', authRateLimitMiddleware);
 app.use('/api/auth', authRoutes);
 app.use('/api/pdf', authMiddleware, generateRoutes);
 app.use('/api/download', authMiddleware, downloadRoutes);

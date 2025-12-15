@@ -1,54 +1,48 @@
 # Quick Start Guide
 
-## Get Your Bearer Token in 30 Seconds
+## 🔐 Get Your Bearer Token
 
-### Method 1: Using cURL (Fastest)
+### Prerequisites
+
+You need valid API credentials configured on the server:
+- `API_CLIENT_ID` - your client ID
+- `API_CLIENT_SECRET` - your client secret
+
+These are set in Railway environment variables (not in code).
+
+### Get Token with cURL
 
 ```bash
-curl -X POST http://localhost:3001/api/auth/token \
+curl -X POST https://ai-audit-pdf-generation-production.up.railway.app/api/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"test": true}'
+  -d '{
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret"
+  }'
 ```
 
 Copy the `token` value from the response and use it like this:
-```bash
+```
 Authorization: Bearer YOUR_TOKEN_HERE
 ```
 
-### Method 2: Using the Test Script
-
-```bash
-cd /Users/smopy/www/Lewux/lewux-pdf-server/pdf-server
-./test-auth.sh
-```
-
-The script will:
-- ✅ Generate a token
-- ✅ Verify it's valid
-- ✅ Show you how to use it
-- ✅ Refresh it
-
-### Method 3: Using Postman
-
-1. Import `Postman_Collection.json`
-2. Send request to: **POST** `{{base_url}}/api/auth/token`
-3. Body: `{"test": true}`
-4. Copy the token from response
-
 ---
 
-## Complete Example: Generate a PDF
+## 📄 Generate a PDF
 
 ### Step 1: Get Token
 ```bash
-TOKEN=$(curl -s -X POST http://localhost:3001/api/auth/token \
+TOKEN=$(curl -s -X POST https://ai-audit-pdf-generation-production.up.railway.app/api/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"test": true}' | jq -r '.token')
+  -d '{
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret"
+  }' | jq -r '.token')
 ```
 
 ### Step 2: Generate PDF
 ```bash
-curl -X POST http://localhost:3001/api/pdf \
+curl -X POST https://ai-audit-pdf-generation-production.up.railway.app/api/pdf \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d @test-payload.json
@@ -56,48 +50,27 @@ curl -X POST http://localhost:3001/api/pdf \
 
 ### Step 3: Download PDF
 ```bash
-# Get the filename from the response above, then:
-curl -X GET http://localhost:3001/api/download/report-XXXXXXXX.pdf \
+curl -X GET https://ai-audit-pdf-generation-production.up.railway.app/api/download/report-XXXXXXXX.pdf \
   -H "Authorization: Bearer $TOKEN" \
   --output my-report.pdf
 ```
 
 ---
 
-## One-Line Token Generator
-
-Save this as an alias in your `~/.zshrc` or `~/.bashrc`:
-
-```bash
-alias pdf-token='curl -s -X POST http://localhost:3001/api/auth/token -H "Content-Type: application/json" -d "{\"test\": true}" | jq -r ".token"'
-```
-
-Then just run:
-```bash
-pdf-token
-```
-
-Or use it directly in requests:
-```bash
-TOKEN=$(pdf-token)
-curl -X POST http://localhost:3001/api/pdf \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d @test-payload.json
-```
-
----
-
-## WordPress Integration
-
-Add this to your WordPress plugin or theme:
+## 🌐 WordPress Integration
 
 ```php
 <?php
 function lewux_get_pdf_token() {
-    $response = wp_remote_post('http://localhost:3001/api/auth/token', [
+    $client_id = get_option('lewux_api_client_id');
+    $client_secret = get_option('lewux_api_client_secret');
+    
+    $response = wp_remote_post('https://ai-audit-pdf-generation-production.up.railway.app/api/auth/token', [
         'headers' => ['Content-Type' => 'application/json'],
-        'body' => json_encode(['test' => true])
+        'body' => json_encode([
+            'client_id' => $client_id,
+            'client_secret' => $client_secret
+        ])
     ]);
     
     $body = json_decode(wp_remote_retrieve_body($response), true);
@@ -107,12 +80,17 @@ function lewux_get_pdf_token() {
 function lewux_generate_pdf($audit_data) {
     $token = lewux_get_pdf_token();
     
-    $response = wp_remote_post('http://localhost:3001/api/pdf', [
+    if (!$token) {
+        return false;
+    }
+    
+    $response = wp_remote_post('https://ai-audit-pdf-generation-production.up.railway.app/api/pdf', [
         'headers' => [
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json'
         ],
-        'body' => json_encode(['data' => $audit_data])
+        'body' => json_encode(['data' => $audit_data]),
+        'timeout' => 60
     ]);
     
     return json_decode(wp_remote_retrieve_body($response), true);
@@ -122,25 +100,26 @@ function lewux_generate_pdf($audit_data) {
 
 ---
 
-## JavaScript/Node.js Integration
+## 💻 JavaScript/Node.js Integration
 
 ```javascript
-// Get token
-async function getToken() {
-    const response = await fetch('http://localhost:3001/api/auth/token', {
+const API_URL = 'https://ai-audit-pdf-generation-production.up.railway.app';
+
+async function getToken(clientId, clientSecret) {
+    const response = await fetch(`${API_URL}/api/auth/token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ test: true })
+        body: JSON.stringify({ 
+            client_id: clientId, 
+            client_secret: clientSecret 
+        })
     });
     const data = await response.json();
     return data.token;
 }
 
-// Generate PDF
-async function generatePDF(auditData) {
-    const token = await getToken();
-    
-    const response = await fetch('http://localhost:3001/api/pdf', {
+async function generatePDF(token, auditData) {
+    const response = await fetch(`${API_URL}/api/pdf`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -148,102 +127,62 @@ async function generatePDF(auditData) {
         },
         body: JSON.stringify({ data: auditData })
     });
-    
     return await response.json();
 }
-
-// Usage
-generatePDF(myAuditData)
-    .then(result => console.log('PDF generated:', result.pdf_url))
-    .catch(err => console.error('Error:', err));
 ```
 
 ---
 
-## Python Integration
+## 🐍 Python Integration
 
 ```python
 import requests
-import json
 
-def get_token():
+API_URL = 'https://ai-audit-pdf-generation-production.up.railway.app'
+
+def get_token(client_id, client_secret):
     response = requests.post(
-        'http://localhost:3001/api/auth/token',
+        f'{API_URL}/api/auth/token',
         headers={'Content-Type': 'application/json'},
-        json={'test': True}
+        json={'client_id': client_id, 'client_secret': client_secret}
     )
     return response.json()['token']
 
-def generate_pdf(audit_data):
-    token = get_token()
-    
+def generate_pdf(token, audit_data):
     response = requests.post(
-        'http://localhost:3001/api/pdf',
+        f'{API_URL}/api/pdf',
         headers={
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json'
         },
         json={'data': audit_data}
     )
-    
     return response.json()
-
-# Usage
-result = generate_pdf(my_audit_data)
-print(f"PDF generated: {result['pdf_url']}")
 ```
 
 ---
 
-## Troubleshooting
+## 🔍 Troubleshooting
 
 ### Server not responding?
 ```bash
-# Check if server is running
-curl http://localhost:3001/api/health
-
-# If not, start it
-cd /Users/smopy/www/Lewux/lewux-pdf-server/pdf-server
-npm run dev
+curl https://ai-audit-pdf-generation-production.up.railway.app/api/health
 ```
 
 ### Token not working?
-- Make sure you include "Bearer " before the token
-- Check token hasn't expired (24 hours)
-- Verify JWT_SECRET in .env matches
+- Ensure you include `Bearer ` (with space) before the token
+- Check token hasn't expired (24 hours default)
+- Verify credentials are correct
 
-### Need help?
-Check the full documentation:
+### Rate limit exceeded?
+- Token endpoint: 5 attempts per 15 minutes
+- API endpoints: 10 requests per 15 minutes
+- Wait 15 minutes before retrying
+
+---
+
+## 📚 Documentation
+
 - [AUTH_ENDPOINTS.md](./AUTH_ENDPOINTS.md) - Authentication details
 - [API_ENDPOINTS.md](./API_ENDPOINTS.md) - API documentation
 - [README.md](./README.md) - General setup
-
----
-
-## Production Mode
-
-For production, set up proper credentials in `.env`:
-
-```env
-API_CLIENT_ID=your-client-id
-API_CLIENT_SECRET=your-secure-secret
-```
-
-Then request tokens with credentials:
-```bash
-curl -X POST http://localhost:3001/api/auth/token \
-  -H "Content-Type: application/json" \
-  -d '{
-    "client_id": "your-client-id",
-    "client_secret": "your-secure-secret"
-  }'
-```
-
----
-
-That's it! You're ready to use the PDF server. 🚀
-
-
-
-
-
