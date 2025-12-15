@@ -325,9 +325,11 @@ class PDFGenerator {
         let browser;
         try {
             // Оптимизированные настройки для Railway
+            // Используем системный Chromium вместо скачивания (ускоряет билд)
             browser = await puppeteer.launch({
                 headless: true,
                 devtools: false,
+                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium', // Используем системный Chromium
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
@@ -353,9 +355,7 @@ class PDFGenerator {
                     '--no-pings',
                     '--use-mock-keychain',
                     '--single-process' // Для Railway - уменьшает использование памяти
-                ],
-                // Используем кэш для ускорения запуска
-                cacheDirectory: process.env.PUPPETEER_CACHE_DIR || undefined
+                ]
             });
 
             const page = await browser.newPage();
