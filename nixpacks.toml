@@ -1,0 +1,50 @@
+# Nixpacks configuration for Railway
+# Installs Chromium and required dependencies for Puppeteer PDF generation
+
+[phases.setup]
+nixPkgs = [
+    "nodejs_20",
+    "chromium",
+    # Required dependencies for Chromium
+    "nss",
+    "freetype",
+    "harfbuzz",
+    "fontconfig",
+    "ca-certificates",
+    "glib",
+    "gtk3",
+    "libdrm",
+    "mesa",
+    "alsa-lib",
+    "at-spi2-atk",
+    "at-spi2-core",
+    "cups",
+    "dbus",
+    "expat",
+    "libxkbcommon",
+    "pango",
+    "xorg.libX11",
+    "xorg.libXcomposite",
+    "xorg.libXdamage",
+    "xorg.libXext",
+    "xorg.libXfixes",
+    "xorg.libXrandr",
+    "xorg.libxcb"
+]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node server.js"
+
+[variables]
+# Skip downloading Chromium since we install it via nixpkgs
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
+# Disable Puppeteer cache
+PUPPETEER_CACHE_DIR = "/tmp/.cache/puppeteer"
+# Node environment
+NODE_ENV = "production"

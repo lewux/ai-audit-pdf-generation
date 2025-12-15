@@ -1,6 +1,51 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
 const path = require('path');
+const { execSync } = require('child_process');
+
+// Find Chromium executable path for different environments
+function getChromiumPath() {
+    // Check environment variable first
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        return process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+    
+    // Common Chromium paths to check
+    const possiblePaths = [
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/google-chrome',
+        '/usr/bin/google-chrome-stable',
+        '/snap/bin/chromium',
+        // macOS paths
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    ];
+    
+    // Check each path
+    for (const chromePath of possiblePaths) {
+        try {
+            if (fs.existsSync(chromePath)) {
+                return chromePath;
+            }
+        } catch (e) {
+            // Continue checking
+        }
+    }
+    
+    // Try to find chromium using 'which' command (for nixpacks/Railway)
+    try {
+        const chromiumPath = execSync('which chromium 2>/dev/null || which chromium-browser 2>/dev/null || which google-chrome 2>/dev/null || echo ""', { encoding: 'utf8' }).trim();
+        if (chromiumPath) {
+            return chromiumPath;
+        }
+    } catch (e) {
+        // Ignore errors
+    }
+    
+    // Return null to let Puppeteer use its bundled Chromium
+    return null;
+}
 
 // Universal function for accessing nested properties by path
 function getByPath(obj, path) {
@@ -324,12 +369,13 @@ class PDFGenerator {
     async generatePDF(html, outputPath) {
         let browser;
         try {
-            // Оптимизированные настройки для Railway
-            // Используем системный Chromium вместо скачивания (ускоряет билд)
-            browser = await puppeteer.launch({
-                headless: true,
+            // Find Chromium path dynamically
+            const chromiumPath = getChromiumPath();
+            
+            // Build launch options
+            const launchOptions = {
+                headless: 'new', // Use new headless mode (fixes deprecation warning)
                 devtools: false,
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium', // Используем системный Chromium
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
@@ -354,9 +400,19 @@ class PDFGenerator {
                     '--no-default-browser-check',
                     '--no-pings',
                     '--use-mock-keychain',
-                    '--single-process' // Для Railway - уменьшает использование памяти
+                    '--single-process' // For Railway - reduces memory usage
                 ]
-            });
+            };
+            
+            // Only set executablePath if we found a system Chromium
+            if (chromiumPath) {
+                launchOptions.executablePath = chromiumPath;
+                console.log(`Using Chromium at: ${chromiumPath}`);
+            } else {
+                console.log('Using Puppeteer bundled Chromium');
+            }
+            
+            browser = await puppeteer.launch(launchOptions);
 
             const page = await browser.newPage();
 
