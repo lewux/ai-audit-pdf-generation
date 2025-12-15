@@ -18,13 +18,21 @@ const authMiddleware = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const HOST = process.env.HOST || 'localhost';
+// Railway требует слушать на 0.0.0.0, а не localhost
+const HOST = process.env.HOST || '0.0.0.0';
 
 // Ensure required directories exist
 const ensureDirectories = async () => {
     try {
-        await fs.ensureDir(process.env.UPLOAD_DIR || './uploads');
-        await fs.ensureDir('./logs');
+        // Используем абсолютные пути для надежности на Railway
+        const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
+        const logsDir = path.join(__dirname, 'logs');
+        
+        await fs.ensureDir(uploadDir);
+        // На Railway логи лучше писать в stdout, но директорию создадим на всякий случай
+        if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_FILE_LOGS === 'true') {
+            await fs.ensureDir(logsDir);
+        }
     } catch (error) {
         console.error('Error creating directories:', error);
         process.exit(1);
@@ -93,17 +101,42 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
+// Validate critical environment variables
+const validateEnvironment = () => {
+    const required = ['JWT_SECRET'];
+    const missing = required.filter(key => !process.env[key]);
+    
+    if (missing.length > 0) {
+        console.error('❌ Missing required environment variables:', missing.join(', '));
+        console.error('Please set these variables in Railway dashboard');
+        if (process.env.NODE_ENV === 'production') {
+            process.exit(1);
+        } else {
+            console.warn('⚠️  Continuing in development mode, but authentication will fail');
+        }
+    }
+    
+    // Warnings for recommended variables
+    if (!process.env.ALLOWED_ORIGINS && process.env.NODE_ENV === 'production') {
+        console.warn('⚠️  ALLOWED_ORIGINS not set - CORS may block requests');
+    }
+    
+    console.log('✅ Environment validation passed');
+};
+
 // Start server
 const startServer = async () => {
     try {
+        validateEnvironment();
         await ensureDirectories();
         
         app.listen(PORT, HOST, () => {
-            console.log(`PDF Server running on http://${HOST}:${PORT}`);
-            console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+            console.log(`✅ PDF Server running on http://${HOST}:${PORT}`);
+            console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+            console.log(`💾 Upload directory: ${process.env.UPLOAD_DIR || path.join(__dirname, 'uploads')}`);
         });
     } catch (error) {
-        console.error('Failed to start server:', error);
+        console.error('❌ Failed to start server:', error);
         process.exit(1);
     }
 };

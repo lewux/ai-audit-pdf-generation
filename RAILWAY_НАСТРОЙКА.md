@@ -13,12 +13,20 @@
 
 ### 1. Переменные окружения (Environment Variables)
 
-В настройках вашего сервиса в Railway добавьте:
+**ОБЯЗАТЕЛЬНО** добавьте в Railway Dashboard → Variables:
 
 ```
 NODE_ENV=production
 PORT=3001
+JWT_SECRET=your-super-secret-jwt-key-here-min-32-chars-change-this-in-production
+ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+```
+
+**Опционально** (для оптимизации):
+```
 PUPPETEER_CACHE_DIR=/tmp/.cache/puppeteer
+API_RATE_LIMIT=10
+JWT_EXPIRY=24h
 ```
 
 **Где найти:**

@@ -20,6 +20,8 @@ class PDFGenerator {
         this.outputDir = options.outputDir || path.join(__dirname, '../uploads');
         this.assetsDir = path.join(__dirname, '../templates', 'assets');
         this.fontsDir = path.join(__dirname, '../templates', 'fonts');
+        // Кэш для проверки, были ли assets уже скопированы
+        this._assetsCopied = false;
     }
 
     async generateFromData(data) {
@@ -84,17 +86,23 @@ class PDFGenerator {
 
     async copyAssets() {
         try {
+            // Оптимизация: копируем assets только один раз, если они уже есть
             const outputAssetsDir = path.join(this.outputDir, 'assets');
             const outputFontsDir = path.join(this.outputDir, 'fonts');
 
-            if (await fs.pathExists(this.assetsDir)) {
+            // Проверяем, нужно ли копировать (если директории уже существуют, пропускаем)
+            const assetsExist = await fs.pathExists(outputAssetsDir);
+            const fontsExist = await fs.pathExists(outputFontsDir);
+
+            if (!assetsExist && await fs.pathExists(this.assetsDir)) {
                 await fs.copy(this.assetsDir, outputAssetsDir);
             }
-            if (await fs.pathExists(this.fontsDir)) {
+            if (!fontsExist && await fs.pathExists(this.fontsDir)) {
                 await fs.copy(this.fontsDir, outputFontsDir);
             }
         } catch (error) {
             // Silently continue if assets can't be copied
+            console.warn('Warning: Could not copy assets:', error.message);
         }
     }
 
