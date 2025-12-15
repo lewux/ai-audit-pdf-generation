@@ -316,6 +316,7 @@ class PDFGenerator {
     async generatePDF(html, outputPath) {
         let browser;
         try {
+            // Оптимизированные настройки для Railway
             browser = await puppeteer.launch({
                 headless: true,
                 devtools: false,
@@ -326,8 +327,27 @@ class PDFGenerator {
                     '--disable-accelerated-2d-canvas',
                     '--no-first-run',
                     '--no-zygote',
-                    '--disable-gpu'
-                ]
+                    '--disable-gpu',
+                    '--disable-software-rasterizer',
+                    '--disable-extensions',
+                    '--disable-background-networking',
+                    '--disable-background-timer-throttling',
+                    '--disable-renderer-backgrounding',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-breakpad',
+                    '--disable-component-extensions-with-background-pages',
+                    '--disable-features=TranslateUI',
+                    '--disable-ipc-flooding-protection',
+                    '--disable-sync',
+                    '--metrics-recording-only',
+                    '--mute-audio',
+                    '--no-default-browser-check',
+                    '--no-pings',
+                    '--use-mock-keychain',
+                    '--single-process' // Для Railway - уменьшает использование памяти
+                ],
+                // Используем кэш для ускорения запуска
+                cacheDirectory: process.env.PUPPETEER_CACHE_DIR || undefined
             });
 
             const page = await browser.newPage();
