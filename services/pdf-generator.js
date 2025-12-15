@@ -1,49 +1,29 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
 const path = require('path');
-const { execSync } = require('child_process');
 
-// Find Chromium executable path for different environments
+// Get Chromium executable path
 function getChromiumPath() {
-    // Check environment variable first
+    // Use environment variable (set in Dockerfile)
     if (process.env.PUPPETEER_EXECUTABLE_PATH) {
         return process.env.PUPPETEER_EXECUTABLE_PATH;
     }
     
-    // Common Chromium paths to check
+    // Fallback paths for different environments
     const possiblePaths = [
         '/usr/bin/chromium',
         '/usr/bin/chromium-browser',
         '/usr/bin/google-chrome',
         '/usr/bin/google-chrome-stable',
-        '/snap/bin/chromium',
-        // macOS paths
-        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-        '/Applications/Chromium.app/Contents/MacOS/Chromium',
     ];
     
-    // Check each path
     for (const chromePath of possiblePaths) {
-        try {
-            if (fs.existsSync(chromePath)) {
-                return chromePath;
-            }
-        } catch (e) {
-            // Continue checking
+        if (fs.existsSync(chromePath)) {
+            return chromePath;
         }
     }
     
-    // Try to find chromium using 'which' command (for nixpacks/Railway)
-    try {
-        const chromiumPath = execSync('which chromium 2>/dev/null || which chromium-browser 2>/dev/null || which google-chrome 2>/dev/null || echo ""', { encoding: 'utf8' }).trim();
-        if (chromiumPath) {
-            return chromiumPath;
-        }
-    } catch (e) {
-        // Ignore errors
-    }
-    
-    // Return null to let Puppeteer use its bundled Chromium
+    // Return null to use Puppeteer's bundled Chromium
     return null;
 }
 
@@ -369,66 +349,51 @@ class PDFGenerator {
     async generatePDF(html, outputPath) {
         let browser;
         try {
-            // Find Chromium path dynamically
+            // Get Chromium path (from env or detect)
             const chromiumPath = getChromiumPath();
             
-            // Base launch args for containerized environments
-            const baseArgs = [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                '--no-zygote',
-                '--disable-gpu',
-                '--disable-software-rasterizer',
-                '--disable-extensions',
-                '--disable-background-networking',
-                '--disable-background-timer-throttling',
-                '--disable-renderer-backgrounding',
-                '--disable-backgrounding-occluded-windows',
-                '--disable-breakpad',
-                '--disable-component-extensions-with-background-pages',
-                '--disable-features=TranslateUI',
-                '--disable-ipc-flooding-protection',
-                '--disable-sync',
-                '--metrics-recording-only',
-                '--mute-audio',
-                '--no-default-browser-check',
-                '--no-pings',
-                '--use-mock-keychain',
-                '--single-process', // For Railway - reduces memory usage
-                '--font-render-hinting=none' // Better font rendering in headless
-            ];
-            
-            // Build launch options
+            // Launch options optimized for containerized environments
             const launchOptions = {
-                headless: 'new', // Use new headless mode (fixes deprecation warning)
-                devtools: false,
-                args: baseArgs
+                headless: 'new', // Use new headless mode
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--no-first-run',
+                    '--no-zygote',
+                    '--disable-gpu',
+                    '--disable-software-rasterizer',
+                    '--disable-extensions',
+                    '--disable-background-networking',
+                    '--disable-background-timer-throttling',
+                    '--disable-renderer-backgrounding',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-breakpad',
+                    '--disable-component-extensions-with-background-pages',
+                    '--disable-features=TranslateUI',
+                    '--disable-ipc-flooding-protection',
+                    '--disable-sync',
+                    '--metrics-recording-only',
+                    '--mute-audio',
+                    '--no-default-browser-check',
+                    '--no-pings',
+                    '--use-mock-keychain',
+                    '--single-process',
+                    '--font-render-hinting=none'
+                ]
             };
             
-            // Try system Chromium first, then fall back to bundled
+            // Set Chromium path if found
             if (chromiumPath) {
                 launchOptions.executablePath = chromiumPath;
-                console.log(`Attempting to use Chromium at: ${chromiumPath}`);
-                
-                try {
-                    browser = await puppeteer.launch(launchOptions);
-                    console.log('Successfully launched system Chromium');
-                } catch (systemError) {
-                    console.error('Failed to launch system Chromium:', systemError.message);
-                    console.log('Falling back to Puppeteer bundled Chromium...');
-                    
-                    // Remove executablePath to use bundled Chromium
-                    delete launchOptions.executablePath;
-                    browser = await puppeteer.launch(launchOptions);
-                    console.log('Successfully launched bundled Chromium');
-                }
+                console.log(`Using Chromium at: ${chromiumPath}`);
             } else {
                 console.log('Using Puppeteer bundled Chromium');
-                browser = await puppeteer.launch(launchOptions);
             }
+            
+            browser = await puppeteer.launch(launchOptions);
+            console.log('Browser launched successfully');
 
             const page = await browser.newPage();
 
