@@ -21,8 +21,8 @@ router.post('/', async (req, res) => {
 
         res.json({
             success: true,
-            pdf_url: result.url,
             pdf_path: result.path,
+            file_name: result.filename,
             file_size: result.size,
             generation_time: result.duration
         });

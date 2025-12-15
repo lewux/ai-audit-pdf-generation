@@ -97,7 +97,10 @@ class PDFGenerator {
     generateFileName() {
         const now = new Date();
         const pad = n => n.toString().padStart(2, '0');
-        return `report-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.pdf`;
+        // Generate random hash for security (8 characters)
+        const randomHash = require('crypto').randomBytes(4).toString('hex');
+        const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+        return `report-${timestamp}-${randomHash}.pdf`;
     }
 
     async loadTemplate() {
