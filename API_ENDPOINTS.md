@@ -240,12 +240,14 @@ curl -X POST http://localhost:3001/api/pdf \
 ```json
 {
   "success": true,
-  "pdf_url": "/files/report-20250929-182224.pdf",
-  "pdf_path": "/path/to/uploads/report-20250929-182224.pdf",
+  "pdf_path": "/app/uploads/report-20251215-160822-a1b2c3d4.pdf",
+  "file_name": "report-20251215-160822-a1b2c3d4.pdf",
   "file_size": 2267646,
   "generation_time": "7348ms"
 }
 ```
+
+> **Note:** File names include a random hash for security. Use `file_name` with `/api/download/{file_name}` to download the PDF.
 
 ### 3. Download PDF File
 **GET** `/api/download/:filename`
@@ -374,34 +376,110 @@ The `data` object in your POST request should include:
 ## 🌐 WordPress Integration Example
 
 ```php
-// WordPress PHP example
-$audit_data = [
-    'data' => [
-        'general_info' => [
-            'site_name' => get_bloginfo('name'),
-            'site_url' => home_url(),
-            'audit_date' => date('Y-m-d'),
-            'site_description' => get_bloginfo('description')
+<?php
+define('PDF_SERVER_URL', 'https://your-server.railway.app');
+define('PDF_CLIENT_ID', 'your-client-id');
+define('PDF_CLIENT_SECRET', 'your-client-secret');
+
+/**
+ * Get or refresh API token (cached for 24 hours)
+ */
+function lewux_get_api_token() {
+    $token = get_transient('lewux_pdf_token');
+    
+    if ($token) {
+        return $token;
+    }
+    
+    $response = wp_remote_post(PDF_SERVER_URL . '/api/auth/token', [
+        'headers' => ['Content-Type' => 'application/json'],
+        'body' => json_encode([
+            'client_id' => PDF_CLIENT_ID,
+            'client_secret' => PDF_CLIENT_SECRET
+        ]),
+        'timeout' => 10
+    ]);
+    
+    if (is_wp_error($response)) {
+        return false;
+    }
+    
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    
+    if (!empty($data['token'])) {
+        // Cache token for 23 hours (1 hour buffer before expiry)
+        set_transient('lewux_pdf_token', $data['token'], 23 * HOUR_IN_SECONDS);
+        return $data['token'];
+    }
+    
+    return false;
+}
+
+/**
+ * Generate PDF and return file info
+ */
+function lewux_generate_pdf($audit_data) {
+    $token = lewux_get_api_token();
+    
+    if (!$token) {
+        return ['error' => 'Failed to get API token'];
+    }
+    
+    $response = wp_remote_post(PDF_SERVER_URL . '/api/pdf', [
+        'headers' => [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
         ],
-        // ... rest of your audit data
-    ]
-];
+        'body' => json_encode(['data' => $audit_data]),
+        'timeout' => 60
+    ]);
+    
+    if (is_wp_error($response)) {
+        return ['error' => $response->get_error_message()];
+    }
+    
+    return json_decode(wp_remote_retrieve_body($response), true);
+}
 
-$response = wp_remote_post('http://localhost:3001/api/pdf', [
-    'headers' => [
-        'Content-Type' => 'application/json',
-        'Authorization' => 'Bearer YOUR_JWT_TOKEN'
-    ],
-    'body' => json_encode($audit_data),
-    'timeout' => 30
-]);
-
-$body = wp_remote_retrieve_body($response);
-$result = json_decode($body, true);
-
-if ($result['success']) {
-    $pdf_url = 'http://localhost:3001' . $result['pdf_url'];
-    // Use $pdf_url for download link
+/**
+ * Download PDF and attach to email
+ */
+function lewux_send_pdf_email($to, $subject, $audit_data) {
+    $result = lewux_generate_pdf($audit_data);
+    
+    if (!$result['success']) {
+        return false;
+    }
+    
+    $token = lewux_get_api_token();
+    $pdf_url = PDF_SERVER_URL . '/api/download/' . $result['file_name'];
+    
+    // Download PDF to temp file
+    $response = wp_remote_get($pdf_url, [
+        'headers' => ['Authorization' => 'Bearer ' . $token],
+        'timeout' => 30
+    ]);
+    
+    if (is_wp_error($response)) {
+        return false;
+    }
+    
+    $temp_file = wp_tempnam($result['file_name']);
+    file_put_contents($temp_file, wp_remote_retrieve_body($response));
+    
+    // Send email with attachment
+    $sent = wp_mail(
+        $to,
+        $subject,
+        'Please find your audit report attached.',
+        ['Content-Type: text/html; charset=UTF-8'],
+        [$temp_file]
+    );
+    
+    // Cleanup
+    @unlink($temp_file);
+    
+    return $sent;
 }
 ```
 

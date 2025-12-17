@@ -100,36 +100,6 @@ curl -X GET http://localhost:3001/api/auth/verify \
 
 ---
 
-### 4. Refresh Token
-
-**Endpoint:** `POST /api/auth/refresh`
-
-**Description:** Refresh an existing token to extend its expiration time.
-
-**Headers:**
-```
-Authorization: Bearer <your-current-token>
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "Bearer",
-  "expires_in": "24h",
-  "usage": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:3001/api/auth/refresh \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-```
-
----
-
 ## Using the Token
 
 Once you have a token, use it in the `Authorization` header for all protected endpoints:

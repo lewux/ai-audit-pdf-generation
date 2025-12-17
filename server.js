@@ -77,8 +77,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/pdf', authMiddleware, generateRoutes);
 app.use('/api/download', authMiddleware, downloadRoutes);
 
-// Serve static files (for generated PDFs)
-app.use('/files', express.static(path.join(__dirname, 'uploads')));
+// Note: Static /files route removed for security
+// Use /api/download/:filename with Bearer token instead
 
 // Error handling middleware
 app.use((error, req, res, next) => {

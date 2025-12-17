@@ -116,61 +116,6 @@ router.post('/token', async (req, res) => {
 });
 
 /**
- * POST /api/auth/refresh
- * Refresh an existing JWT token
- */
-router.post('/refresh', async (req, res) => {
-    try {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1];
-
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token required'
-            });
-        }
-
-        // Verify and decode the old token
-        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-            if (err) {
-                return res.status(403).json({
-                    success: false,
-                    error: 'Invalid or expired token'
-                });
-            }
-
-            // Generate new token with same payload
-            const payload = {
-                userId: decoded.userId,
-                email: decoded.email,
-                role: decoded.role,
-                client_id: decoded.client_id,
-                generated_at: new Date().toISOString()
-            };
-
-            const newToken = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: process.env.JWT_EXPIRY || '24h'
-            });
-
-            res.json({
-                success: true,
-                token: newToken,
-                token_type: 'Bearer',
-                expires_in: process.env.JWT_EXPIRY || '24h',
-                usage: `Authorization: Bearer ${newToken}`
-            });
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: 'Failed to refresh token'
-        });
-    }
-});
-
-/**
  * GET /api/auth/verify
  * Verify if a token is valid
  */
