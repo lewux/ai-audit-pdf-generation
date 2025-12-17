@@ -13,12 +13,12 @@ const healthRoutes = require('./routes/health');
 const downloadRoutes = require('./routes/download');
 
 // Import middleware
-const { default: rateLimitMiddleware, auth: authRateLimitMiddleware } = require('./middleware/rate-limit');
+const { auth: authRateLimitMiddleware, pdf: pdfRateLimitMiddleware, download: downloadRateLimitMiddleware, general: generalRateLimitMiddleware } = require('./middleware/rate-limit');
 const authMiddleware = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-// Railway требует слушать на 0.0.0.0, а не localhost
+// Railway requires listening on 0.0.0.0, not localhost
 const HOST = process.env.HOST || '0.0.0.0';
 
 // Trust proxy for Railway (fixes X-Forwarded-For issues with express-rate-limit)
@@ -28,12 +28,12 @@ app.set('trust proxy', 1);
 // Ensure required directories exist
 const ensureDirectories = async () => {
     try {
-        // Используем абсолютные пути для надежности на Railway
+        // Use absolute paths for reliability on Railway
         const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
         const logsDir = path.join(__dirname, 'logs');
         
         await fs.ensureDir(uploadDir);
-        // На Railway логи лучше писать в stdout, но директорию создадим на всякий случай
+        // On Railway logs are better written to stdout, but create directory just in case
         if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_FILE_LOGS === 'true') {
             await fs.ensureDir(logsDir);
         }
@@ -66,13 +66,21 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Rate limiting
-app.use('/api/', rateLimitMiddleware);
+// Rate limiting - apply specific limits for each endpoint
+// Health check - general limit (high, as it's lightweight)
+app.use('/api/health', generalRateLimitMiddleware);
+
+// Auth endpoints - strict limit (5 requests / 15 minutes)
+app.use('/api/auth', authRateLimitMiddleware);
+
+// PDF generation - separate limit (25 requests / 10 minutes)
+app.use('/api/pdf', pdfRateLimitMiddleware);
+
+// PDF download - separate limit (25 requests / 10 minutes)
+app.use('/api/download', downloadRateLimitMiddleware);
 
 // Routes
 app.use('/api/health', healthRoutes);
-// Apply strict rate limiting to auth endpoints (especially token generation)
-app.use('/api/auth', authRateLimitMiddleware);
 app.use('/api/auth', authRoutes);
 app.use('/api/pdf', authMiddleware, generateRoutes);
 app.use('/api/download', authMiddleware, downloadRoutes);

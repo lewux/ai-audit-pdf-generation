@@ -219,7 +219,7 @@ function lewux_generate_pdf($audit_data) {
 - [AUTH_ENDPOINTS.md](./AUTH_ENDPOINTS.md) - Authentication documentation
 - [API_ENDPOINTS.md](./API_ENDPOINTS.md) - API documentation
 - [RAILWAY_SETUP.md](./RAILWAY_SETUP.md) - Railway deployment guide
-- [RAILWAY_НАСТРОЙКА.md](./RAILWAY_НАСТРОЙКА.md) - Railway setup (Russian)
+- [RAILWAY_SETUP_RU.md](./RAILWAY_SETUP_RU.md) - Railway setup (Russian)
 
 ## License
 

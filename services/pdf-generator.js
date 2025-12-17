@@ -45,7 +45,7 @@ class PDFGenerator {
         this.outputDir = options.outputDir || path.join(__dirname, '../uploads');
         this.assetsDir = path.join(__dirname, '../templates', 'assets');
         this.fontsDir = path.join(__dirname, '../templates', 'fonts');
-        // Кэш для проверки, были ли assets уже скопированы
+        // Cache to check if assets have already been copied
         this._assetsCopied = false;
     }
 
@@ -114,11 +114,11 @@ class PDFGenerator {
 
     async copyAssets() {
         try {
-            // Оптимизация: копируем assets только один раз, если они уже есть
+            // Optimization: copy assets only once if they already exist
             const outputAssetsDir = path.join(this.outputDir, 'assets');
             const outputFontsDir = path.join(this.outputDir, 'fonts');
 
-            // Проверяем, нужно ли копировать (если директории уже существуют, пропускаем)
+            // Check if copying is needed (if directories already exist, skip)
             const assetsExist = await fs.pathExists(outputAssetsDir);
             const fontsExist = await fs.pathExists(outputFontsDir);
 
