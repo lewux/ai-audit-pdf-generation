@@ -137,6 +137,9 @@ class PDFGenerator {
     replaceTemplateVariables(template, data) {
         let html = template;
 
+        // Auto-inject current year for copyright and other date placeholders
+        data.currentYear = new Date().getFullYear();
+
         // Preparation of FCP values for substitution through universal mechanism
         if (data.webVitals && data.webVitals.mobile && data.webVitals.desktop) {
             data.fcpMobile = data.webVitals.mobile.fcp ? (String(data.webVitals.mobile.fcp).replace(/[^\d.,]/g, '').replace('.', ',') || '—') : '—';
@@ -645,6 +648,12 @@ class PDFGenerator {
                     best_practices: data.lighthouse_scores?.desktop?.best_practices ?? 0,
                     seo: data.lighthouse_scores?.desktop?.seo ?? 0,
                     total_score: data.lighthouse_scores?.desktop?.total_score ?? 0
+                },
+                avg: {
+                    performance: Math.round(((data.lighthouse_scores?.mobile?.performance ?? 0) + (data.lighthouse_scores?.desktop?.performance ?? 0)) / 2),
+                    accessibility: Math.round(((data.lighthouse_scores?.mobile?.accessibility ?? 0) + (data.lighthouse_scores?.desktop?.accessibility ?? 0)) / 2),
+                    best_practices: Math.round(((data.lighthouse_scores?.mobile?.best_practices ?? 0) + (data.lighthouse_scores?.desktop?.best_practices ?? 0)) / 2),
+                    seo: Math.round(((data.lighthouse_scores?.mobile?.seo ?? 0) + (data.lighthouse_scores?.desktop?.seo ?? 0)) / 2),
                 },
                 performance: data.lighthouse_scores?.mobile?.performance ?? "—",
                 accessibility: data.lighthouse_scores?.mobile?.accessibility ?? "—",
