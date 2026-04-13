@@ -662,7 +662,7 @@ class PDFGenerator {
             },
             seoMetrics: data.seo_analysis?.metrics ?? null,
             contactInfo: {
-                email: "lewux.co@gmail.com",
+                email: "info@lewux.com",
                 phone: "",
                 website: "lewux.com"
             },
